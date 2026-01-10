@@ -1,5 +1,11 @@
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
-const ProtocolSection = ({ stats }: { stats: any }) => {
+
+type ProtocolSectionProps = {
+    stats: any;
+    refreshProtocol: () => Promise<void>;
+};
+
+const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
     const { convertFeesAndStake } = useCoreMicroBank();
     return (
         <section id="protocol" style={{ padding: "100px 20px" }}>
@@ -26,6 +32,7 @@ const ProtocolSection = ({ stats }: { stats: any }) => {
                 onClick={async () => {
                     try {
                         await convertFeesAndStake();
+                        await refreshProtocol();
                         alert("Fees converted to LIQ ✅");
                     } catch (e) {
                         alert("Conversion failed ❌");

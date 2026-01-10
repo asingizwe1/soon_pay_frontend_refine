@@ -42,7 +42,7 @@ export function useCoreMicroBank() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []); // 🔑 ensure connected
     const signer = provider.getSigner();
-
+    console.log("🔍 CORE_MICROBANK ENV:", CONTRACT_ADDRESS);
     return new ethers.Contract(
       CONTRACT_ADDRESS,
       CoreMicroBankABI,
@@ -92,7 +92,7 @@ export function useCoreMicroBank() {
   // 📊 Protocol reads
   const getProtocolStats = async () => {
     const contract = await getContract();
-
+    console.log("Reading protocol stats from:", CONTRACT_ADDRESS);
     const [
       feePool,
       totalStaked,

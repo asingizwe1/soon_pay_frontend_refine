@@ -33,6 +33,10 @@ const App = () => {
   //   }
   //   loadProtocol();
   // }, []);
+  const refreshProtocol = async () => {
+    const stats = await getProtocolStats();
+    setProtocolStats(stats);
+  };
 
   useEffect(() => {
     getProtocolStats().then(setProtocolStats);
@@ -46,8 +50,9 @@ const App = () => {
       return [event, ...prev].slice(0, 50);
     });
   });
-
+  console.log("ENV CHECK:", import.meta.env.VITE_CORE_MICROBANK);
   return (
+
     <>
       <Navbar />
       <DevWalletPanel />
@@ -65,7 +70,9 @@ const App = () => {
 
       <TransactionsSection events={events} />
 
-      <ProtocolSection stats={protocolStats} />
+      <ProtocolSection stats={protocolStats}
+        refreshProtocol={refreshProtocol}
+      />
     </>
   );
 };
