@@ -51,13 +51,21 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                     disabled={!hasYield}
                     style={{
                         marginTop: 15,
-                        width: '100%',
+                        width: "100%",
                         padding: 10,
-                        opacity: hasYield ? 1 : 0.5
+                        background: hasYield ? "#22c55e" : "#6b7280",
+                        cursor: hasYield ? "pointer" : "not-allowed"
                     }}
                 >
                     Withdraw
                 </button>
+
+                {!hasYield && (
+                    <p style={{ color: "orange", marginTop: 8 }}>
+                        Yield not available yet. Convert fees first.
+                    </p>
+                )}
+
 
             </div>
         </section>

@@ -26,12 +26,16 @@ const App = () => {
   const { getProtocolStats } = useCoreMicroBank();
 
   // 🔁 Load protocol data
+  // useEffect(() => {
+  //   async function loadProtocol() {
+  //     const stats = await getProtocolStats();
+  //     setProtocolStats(stats);
+  //   }
+  //   loadProtocol();
+  // }, []);
+
   useEffect(() => {
-    async function loadProtocol() {
-      const stats = await getProtocolStats();
-      setProtocolStats(stats);
-    }
-    loadProtocol();
+    getProtocolStats().then(setProtocolStats);
   }, []);
 
   // ✅ EVENTS (mounted ONCE)

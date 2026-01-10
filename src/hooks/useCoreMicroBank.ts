@@ -50,6 +50,17 @@ export function useCoreMicroBank() {
     );
   };
 
+  // 🔄 Convert protocol fees to LIQ (ADMIN / DEMO)
+  const convertFeesAndStake = async () => {
+    const contract = await getContract();
+
+    // mock price = 1 (demo)
+    const mockPrice = ethers.utils.parseUnits("1", 18);
+
+    const tx = await contract.convertFeesAndStake(mockPrice);
+    return tx.wait();
+  };
+
 
   // 🔑 phone → bytes32
   const phoneToUserId = (phone: string) => {
@@ -143,6 +154,7 @@ export function useCoreMicroBank() {
     requestLoan,
     repayLoan,
     maxBorrowable,
+    convertFeesAndStake,
     getProtocolStats,
     getUGXtoUSD,
     phoneToUserId
