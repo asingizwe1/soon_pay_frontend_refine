@@ -4,6 +4,14 @@
 
 // Calls registerUser(userId)
 
+//Proof that a cryptographic identity was created on-chain
+// Account creation receipt
+
+// Identity card
+
+// Activation slip
+
+
 // Users are represented by hashed identifiers.
 // Agents register users on-chain using a custodial accounting model.
 // No personal data is stored — only cryptographic identifiers.”
@@ -12,10 +20,20 @@ import { useState } from "react";
 import { ethers } from "ethers";
 import { getCoreMicroBankContract } from "../contracts/coreMicroBank";
 import { phoneToUserId } from "../utils/userId";
+import VoucherDisplay from "./VoucherDisplay";
+
 
 const UserSection = () => {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
+
+  const [voucher, setVoucher] = useState<null | {
+    phone: string;
+    amount: number;
+    code: string;
+    issuedAt: number;
+  }>(null);
+
 
   const registerUser = async () => {
     try {
@@ -37,6 +55,14 @@ const UserSection = () => {
 
       const tx = await contract.registerUser(userId);
       await tx.wait();
+
+      setVoucher({
+        phone,
+        amount: 0,
+        code: userId.slice(0, 10).toUpperCase(), // short ID fingerprint
+        issuedAt: Date.now(),
+      });
+
 
       setStatus("✅ User registered successfully");
 
@@ -65,6 +91,8 @@ const UserSection = () => {
       </button>
 
       <p>{status}</p>
+      <VoucherDisplay voucher={voucher} />
+
     </section>
   );
 };

@@ -121,6 +121,15 @@ const downloadVoucher = async () => {
 const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
     const hasVoucher = voucher !== null;
 
+    const qrPayload = hasVoucher
+        ? JSON.stringify({
+            type: voucher.amount === 0 ? "USER_REGISTRATION" : "VALUE_VOUCHER",
+            userId: voucher.code,
+            amount: voucher.amount,
+            issuedAt: voucher.issuedAt,
+        })
+        : "";
+
     return (
         <div style={styles.wrapper}>
             <div ref={voucherRef} style={styles.voucher(hasVoucher)}>
@@ -135,14 +144,19 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
                 />
 
                 {/* Header */}
-                <h3 style={styles.title}>LIQUID AGENT VOUCHER</h3>
+                <h3 style={styles.title}>
+                    {voucher?.amount === 0
+                        ? "LIQUID AGENT USER ID"
+                        : "LIQUID AGENT VOUCHER"}
+                </h3>
+
 
                 {/* Body */}
                 <div style={styles.body}>
                     {/* QR Section */}
                     <div style={styles.qrBox}>
                         {hasVoucher ? (
-                            <QRCode value={voucher!.code} size={100} />
+                            <QRCode value={qrPayload} size={100} />
 
                         ) : (
                             <div style={styles.qrPlaceholder} />
