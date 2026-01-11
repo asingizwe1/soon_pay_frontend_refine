@@ -55,7 +55,7 @@ export function useCoreMicroBank() {
     const contract = await getContract();
 
     // mock price = 1 (demo)
-    const mockPrice = ethers.utils.parseUnits("1", 18);
+    const mockPrice = 1; // ethers.utils.parseUnits("1", 18);
 
     const tx = await contract.convertFeesAndStake(mockPrice);
     return tx.wait();
