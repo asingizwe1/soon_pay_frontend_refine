@@ -1,6 +1,8 @@
 // components/VoucherDisplay.tsx
 import React from "react";
 import QRCode from "qrcode.react";
+import { toPng } from "html-to-image";
+import { useRef } from "react";
 
 type Voucher = {
     phone: string;
@@ -8,6 +10,9 @@ type Voucher = {
     code: string;
     issuedAt: number;
 };
+
+const voucherRef = useRef<HTMLDivElement>(null);
+
 const styles: any = {
     wrapper: {
         marginTop: 40,
@@ -102,12 +107,23 @@ const styles: any = {
     },
 };
 
+const downloadVoucher = async () => {
+    if (!voucherRef.current) return;
+
+    const dataUrl = await toPng(voucherRef.current);
+    const link = document.createElement("a");
+    link.download = "liquid-agent-voucher.png";
+    link.href = dataUrl;
+    link.click();
+};
+
+
 const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
     const hasVoucher = voucher !== null;
 
     return (
         <div style={styles.wrapper}>
-            <div style={styles.voucher(hasVoucher)}>
+            <div ref={voucherRef} style={styles.voucher(hasVoucher)}>
                 {/* Shimmer overlay (only when empty) */}
                 {!hasVoucher && <div style={styles.shimmer} />}
 
@@ -147,9 +163,23 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
                             {hasVoucher ? voucher!.code : "VOUCHER-CODE-XXXX"}
                         </p>
                         <p style={styles.time}>
-                            {hasVoucher
-                                ? new Date(voucher!.issuedAt).toLocaleString()
-                                : "Issued after transaction"}
+                            {hasVoucher && (
+                                <button
+                                    onClick={downloadVoucher}
+                                    style={{
+                                        marginTop: 16,
+                                        width: "100%",
+                                        padding: 10,
+                                        background: "#111827",
+                                        color: "#fff",
+                                        borderRadius: 8,
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    ⬇ Download Voucher
+                                </button>
+                            )}
+
                         </p>
                     </div>
                 </div>

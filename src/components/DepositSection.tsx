@@ -1,16 +1,24 @@
 import { useState } from "react";
+import VoucherDisplay from "./VoucherDisplay";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 //Do NOT mix useWeb3React and window.ethereum in the same app
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
 const DepositSection = () => {
     const { recordDeposit } = useCoreMicroBank();
+    const [voucher, setVoucher] = useState<null | {
+        phone: string;
+        amount: number;
+        code: string;
+        issuedAt: number;
+    }>(null);
 
     const [phone, setPhone] = useState("");
     const [amount, setAmount] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleDeposit = async () => {
+
         if (!phone || !amount) {
             alert("Please enter phone number and amount");
             return;
@@ -22,6 +30,14 @@ const DepositSection = () => {
             // 🔥 THIS IS THE MISSING LINK
             await recordDeposit(phone, amount);
 
+            setVoucher({
+                phone,
+                amount: Number(amount),
+                code: crypto.randomUUID().slice(0, 8).toUpperCase(),
+                issuedAt: Date.now(),
+            });
+
+
             alert("✅ Deposit recorded successfully");
             setAmount("");
         } catch (err) {
@@ -30,6 +46,8 @@ const DepositSection = () => {
         } finally {
             setLoading(false);
         }
+
+
     };
 
     return (
@@ -56,6 +74,9 @@ const DepositSection = () => {
                     onChange={(e) => setAmount(e.target.value)}
                     style={{ width: "100%", padding: 10 }}
                 />
+
+                <VoucherDisplay voucher={voucher} />
+
 
                 <button
                     onClick={handleDeposit}

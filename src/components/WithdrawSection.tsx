@@ -63,6 +63,9 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                     style={{ width: "100%", padding: 10, marginTop: 10 }}
                 />
 
+                <VoucherDisplay voucher={voucher} />
+
+
                 <button
                     disabled={!hasYield}
                     style={{
