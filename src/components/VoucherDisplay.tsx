@@ -1,63 +1,207 @@
 // components/VoucherDisplay.tsx
 import React from "react";
+import { QRCode } from "qrcode.react";
 
-const VoucherDisplay = ({ phone, amount, voucherCode }: {
+type Voucher = {
     phone: string;
-    amount: string;
-    voucherCode: string;
-}) => {
-    const hasVoucher = voucherCode !== "";
+    amount: number;
+    code: string;
+    issuedAt: number;
+};
+const styles: any = {
+    wrapper: {
+        marginTop: 40,
+        display: "flex",
+        justifyContent: "center",
+    },
+
+    voucher: (active: boolean) => ({
+        position: "relative",
+        width: 420,
+        padding: 24,
+        borderRadius: 12,
+        background: active
+            ? "linear-gradient(135deg, #ffffff, #f9fafb)"
+            : "linear-gradient(135deg, #eef2ff, #f3f4f6)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+        clipPath:
+            "polygon(0 0, 100% 0, 100% 94%, 95% 100%, 90% 94%, 85% 100%, 80% 94%, 75% 100%, 70% 94%, 65% 100%, 60% 94%, 55% 100%, 50% 94%, 45% 100%, 40% 94%, 35% 100%, 30% 94%, 25% 100%, 20% 94%, 15% 100%, 10% 94%, 5% 100%, 0 94%)",
+        overflow: "hidden",
+    }),
+
+    shimmer: {
+        position: "absolute",
+        inset: 0,
+        background:
+            "linear-gradient(110deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 70%)",
+        animation: "shimmer 2s infinite",
+    },
+
+    logo: {
+        position: "absolute",
+        top: 12,
+        right: 12,
+        width: 48,
+        opacity: 0.9,
+    },
+
+    title: {
+        textAlign: "center",
+        fontWeight: 700,
+        letterSpacing: 1,
+        marginBottom: 20,
+    },
+
+    body: {
+        display: "flex",
+        gap: 16,
+    },
+
+    qrBox: {
+        width: 110,
+        height: 110,
+        background: "#fff",
+        borderRadius: 8,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    qrPlaceholder: {
+        width: 100,
+        height: 100,
+        borderRadius: 6,
+        background:
+            "repeating-linear-gradient(45deg, #d1d5db, #d1d5db 10px, #e5e7eb 10px, #e5e7eb 20px)",
+    },
+
+    details: {
+        flex: 1,
+    },
+
+    line: {
+        margin: "6px 0",
+        fontSize: 14,
+    },
+
+    code: (active: boolean) => ({
+        marginTop: 10,
+        padding: "6px 10px",
+        borderRadius: 6,
+        fontWeight: 700,
+        letterSpacing: 1,
+        background: "#111827",
+        color: "#fff",
+        filter: active ? "none" : "blur(4px)",
+    }),
+
+    time: {
+        marginTop: 6,
+        fontSize: 12,
+        color: "#6b7280",
+    },
+};
+
+const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
+    const hasVoucher = voucher !== null;
 
     return (
-        <div
-            style={{
-                marginTop: 40,
-                padding: 20,
-                borderRadius: 16,
-                border: "2px dashed #3b82f6",
-                background: hasVoucher ? "#f9fafb" : "linear-gradient(to right, #e0e7ff, #f3f4f6)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                maxWidth: 400,
-                position: "relative"
-            }}
-        >
-            {/* Liquid Agent Logo */}
-            <img
-                src="/assets/liquid-agent-logo.png"
-                alt="Liquid Agent"
-                style={{ width: 60, position: "absolute", top: 10, right: 10 }}
-            />
+        <div style={styles.wrapper}>
+            <div style={styles.voucher(hasVoucher)}>
+                {/* Shimmer overlay (only when empty) */}
+                {!hasVoucher && <div style={styles.shimmer} />}
 
-            {/* QR Code Placeholder */}
-            <div style={{
-                width: 100,
-                height: 100,
-                background: "#e5e7eb",
-                borderRadius: 8,
-                marginBottom: 20,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 12,
-                color: "#6b7280"
-            }}>
-                QR Code
+                {/* Logo */}
+                <img
+                    src="/assets/liquid-agent-logo.png"
+                    alt="Liquid Agent"
+                    style={styles.logo}
+                />
+
+                {/* Header */}
+                <h3 style={styles.title}>LIQUID AGENT VOUCHER</h3>
+
+                {/* Body */}
+                <div style={styles.body}>
+                    {/* QR Section */}
+                    <div style={styles.qrBox}>
+                        {hasVoucher ? (
+                            <QRCode
+                                value={voucher!.code}
+                                size={100}
+                                bgColor="#ffffff"
+                                fgColor="#111827"
+                            />
+                        ) : (
+                            <div style={styles.qrPlaceholder} />
+                        )}
+                    </div>
+
+                    {/* Details */}
+                    <div style={styles.details}>
+                        <p style={styles.line}>
+                            <strong>Phone:</strong>{" "}
+                            {hasVoucher ? voucher!.phone : "••••••••"}
+                        </p>
+                        <p style={styles.line}>
+                            <strong>Amount:</strong>{" "}
+                            {hasVoucher ? `UGX ${voucher!.amount}` : "UGX ••••"}
+                        </p>
+                        <p style={styles.code(hasVoucher)}>
+                            {hasVoucher ? voucher!.code : "VOUCHER-CODE-XXXX"}
+                        </p>
+                        <p style={styles.time}>
+                            {hasVoucher
+                                ? new Date(voucher!.issuedAt).toLocaleString()
+                                : "Issued after transaction"}
+                        </p>
+                    </div>
+                </div>
             </div>
-
-            {hasVoucher ? (
-                <>
-                    <p><strong>Phone:</strong> {phone}</p>
-                    <p><strong>Amount:</strong> UGX {amount}</p>
-                    <p><strong>Voucher Code:</strong> {voucherCode}</p>
-                    <p><strong>Issued:</strong> {new Date().toLocaleString()}</p>
-                </>
-            ) : (
-                <p style={{ color: "#9ca3af", fontStyle: "italic" }}>
-                    Voucher will appear here after deposit...
-                </p>
-            )}
         </div>
     );
 };
 
 export default VoucherDisplay;
+
+
+
+// ┌──────────────────────────────┐
+// │  Torn Edge / Zigzag Outline  │  ← CSS clip-path or SVG
+// ├──────────────────────────────┤
+// │  Header                      │
+// │  Logo        Voucher Title   │
+// ├──────────────────────────────┤
+// │  Body                        │
+// │  QR Code   |  Details        │
+// │            |  Amount         │
+// │            |  Voucher Code   │
+// │            |  Date           │
+// ├──────────────────────────────┤
+// │  Footer (branding / note)    │
+// └──────────────────────────────┘
+
+
+// Option A (recommended): CSS clip-path
+
+// Use clip-path: polygon(...)
+
+// Gives you zig-zag / receipt effect
+
+// Lightweight, no images
+
+// This matches the third image you attached best.
+
+// Option B: SVG background
+
+// More control
+
+// Slightly heavier
+
+// Good if you want animated edges later
+
+// Do NOT generate vouchers inside the component
+
+// ❌ Do NOT call contracts from this component
+
+// ❌ Do NOT store voucher state here
