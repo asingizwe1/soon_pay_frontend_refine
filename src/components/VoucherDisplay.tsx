@@ -1,6 +1,7 @@
 // components/VoucherDisplay.tsx
 import React from "react";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
+
 import { toPng } from "html-to-image";
 import { useRef } from "react";
 
@@ -11,7 +12,7 @@ type Voucher = {
     issuedAt: number;
 };
 
-const voucherRef = useRef<HTMLDivElement>(null);
+
 
 const styles: any = {
     wrapper: {
@@ -107,19 +108,20 @@ const styles: any = {
     },
 };
 
-const downloadVoucher = async () => {
-    if (!voucherRef.current) return;
-
-    const dataUrl = await toPng(voucherRef.current);
-    const link = document.createElement("a");
-    link.download = "liquid-agent-voucher.png";
-    link.href = dataUrl;
-    link.click();
-};
 
 
 const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
     const hasVoucher = voucher !== null;
+    const voucherRef = useRef<HTMLDivElement>(null);
+    const downloadVoucher = async () => {
+        if (!voucherRef.current) return;
+
+        const dataUrl = await toPng(voucherRef.current);
+        const link = document.createElement("a");
+        link.download = "liquid-agent-voucher.png";
+        link.href = dataUrl;
+        link.click();
+    };
 
     const qrPayload = hasVoucher
         ? JSON.stringify({
@@ -156,7 +158,13 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
                     {/* QR Section */}
                     <div style={styles.qrBox}>
                         {hasVoucher ? (
-                            <QRCode value={qrPayload} size={100} />
+                            <QRCodeSVG
+                                value={qrPayload}
+                                size={100}
+                                bgColor="#ffffff"
+                                fgColor="#111827"
+                            />
+
 
                         ) : (
                             <div style={styles.qrPlaceholder} />
