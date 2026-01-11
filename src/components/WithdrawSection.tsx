@@ -5,10 +5,16 @@
 // Bonus LIQ is auto handled
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
-
+import VoucherDisplay from "./VoucherDisplay";
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
 
     const hasYield = totalLiquidStaked > 0;
+    const [voucher, setVoucher] = useState<null | {
+        phone: string;
+        amount: number;
+        code: string;
+        issuedAt: number;
+    }>(null);
 
 
     const { withdraw } = useCoreMicroBank();
@@ -21,12 +27,22 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
 
         try {
             await withdraw(userId, amount);
+
+            // ✅ Create voucher AFTER success
+            setVoucher({
+                phone: userId.slice(0, 10) + "...", // or real phone later
+                amount: Number(amount),
+                code: crypto.randomUUID().slice(0, 8).toUpperCase(),
+                issuedAt: Date.now(),
+            });
+
             alert("Withdraw successful");
         } catch (err) {
             console.error(err);
             alert("Withdraw failed");
         }
     };
+
 
     return (
         <section id="withdraw" style={{ padding: "100px 20px" }}>

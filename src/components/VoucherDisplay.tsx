@@ -1,6 +1,6 @@
 // components/VoucherDisplay.tsx
 import React from "react";
-import { QRCode } from "qrcode.react";
+import QRCode from "qrcode.react";
 
 type Voucher = {
     phone: string;
@@ -126,12 +126,8 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
                     {/* QR Section */}
                     <div style={styles.qrBox}>
                         {hasVoucher ? (
-                            <QRCode
-                                value={voucher!.code}
-                                size={100}
-                                bgColor="#ffffff"
-                                fgColor="#111827"
-                            />
+                            <QRCode value={voucher!.code} size={100} />
+
                         ) : (
                             <div style={styles.qrPlaceholder} />
                         )}
