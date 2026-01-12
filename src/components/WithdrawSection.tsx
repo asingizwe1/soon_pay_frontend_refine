@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import VoucherDisplay from "./VoucherDisplay";
 import { sendSMS } from "../utils/sendSMS";
+import { getUserPhone } from "../utils/userDictionary";
 
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
 
@@ -37,6 +38,13 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                 code: crypto.randomUUID().slice(0, 8).toUpperCase(),
                 issuedAt: Date.now(),
             });
+
+            const phone = getUserPhone(userId);
+
+            if (!phone) {
+                alert("User phone not found. User must deposit/register first.");
+                return;
+            }
 
             await sendSMS({
                 to: phone,

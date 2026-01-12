@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import { sendSMS } from "../utils/sendSMS";
-
+import { getUserPhone } from "../utils/userDictionary";
 const LoanSection = () => {
     //     Functions are not global
 
@@ -30,6 +30,12 @@ const LoanSection = () => {
 
     const handleRequest = async () => {
         try {
+            const phone = getUserPhone(userId);
+
+            if (!phone) {
+                alert("User phone not found. User must deposit/register first.");
+                return;
+            }
             await requestLoan(userId, amount);
 
             await sendSMS({

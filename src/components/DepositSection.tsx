@@ -2,6 +2,8 @@ import { useState } from "react";
 import VoucherDisplay from "./VoucherDisplay";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import { sendSMS } from "../utils/sendSMS";
+import { saveUserPhone } from "@/utils/userDictionary";
+import { phoneToUserId } from "@/utils/userId";
 //Do NOT mix useWeb3React and window.ethereum in the same app
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
@@ -26,6 +28,7 @@ const DepositSection = () => {
         }
 
         try {
+            const userId = phoneToUserId(phone);
             setLoading(true);
 
             // 🔥 THIS IS THE MISSING LINK
@@ -47,6 +50,10 @@ const DepositSection = () => {
             });
 
             alert("✅ Deposit recorded successfully");
+
+
+            saveUserPhone(userId, phone);
+
             setAmount("");
         } catch (err) {
             console.error("Deposit failed:", err);
