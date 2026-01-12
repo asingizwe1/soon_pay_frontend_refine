@@ -1,3 +1,9 @@
+// “Deposits generate protocol fees.
+// Those fees are periodically converted into a yield-bearing Liquid position owned by the protocol.
+// When a user successfully withdraws — with no outstanding loan — they receive a LIQ bonus paid from protocol yield.”
+
+
+
 // get contract
 
 // send tx
@@ -49,6 +55,14 @@ export function useCoreMicroBank() {
       signer
     );
   };
+
+  //get user debt function
+  const getUserDebt = async (userId: string) => {
+    const contract = await getContract();
+    const user = await contract.users(userId);
+    return user.loanDebt.toString();
+  };
+
 
   // 🔄 Convert protocol fees to LIQ (ADMIN / DEMO)
   const convertFeesAndStake = async () => {
@@ -164,6 +178,7 @@ export function useCoreMicroBank() {
 
 
   return {
+    getUserDebt,
     registerUser,
     recordDeposit,
     withdraw,

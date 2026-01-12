@@ -7,10 +7,20 @@ import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 
 const LoanSection = () => {
+    //     Functions are not global
+
+    // They must be:
+
+    // Defined inside the hook
+
+    // Returned
+
+    // Destructured where used
     const {
         requestLoan,
         repayLoan,
-        maxBorrowable
+        maxBorrowable,
+        getUserDebt
     } = useCoreMicroBank();
 
     const [userId, setUserId] = useState("");
@@ -28,12 +38,24 @@ const LoanSection = () => {
     };
 
     const handleRepay = async () => {
+        if (!userId || !amount) {
+            alert("Missing fields");
+            return;
+        }
+
+        const debt = await getUserDebt(userId);
+
+        if (Number(amount) > Number(debt)) {
+            alert(`Cannot repay more than outstanding debt (${debt})`);
+            return;
+        }
+
         try {
             await repayLoan(userId, amount);
             alert("Loan repaid");
-        } catch (e) {
-            console.error(e);
-            alert("Repayment failed");
+        } catch (err) {
+            console.error(err);
+            alert("Repay failed");
         }
     };
 
@@ -69,6 +91,7 @@ const LoanSection = () => {
                 </button>
 
                 <button
+                    disabled={!userId || !amount}
                     onClick={handleRepay}
                     style={{ marginTop: 10, width: "100%", padding: 10 }}
                 >
@@ -83,6 +106,16 @@ const LoanSection = () => {
                 </button>
 
                 {max && <p>Max Borrowable: {max}</p>}
+
+                <button
+                    onClick={async () => {
+                        const debt = await getUserDebt(userId);
+                        setAmount(debt);
+                    }}
+                >
+                    Repay Full
+                </button>
+                <p>Outstanding Debt: {max}</p>
             </div>
         </section>
     );
