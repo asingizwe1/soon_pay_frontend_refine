@@ -1,6 +1,7 @@
 import { useState } from "react";
 import VoucherDisplay from "./VoucherDisplay";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
+import { sendSMS } from "../utils/sendSMS";
 //Do NOT mix useWeb3React and window.ethereum in the same app
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
@@ -37,6 +38,13 @@ const DepositSection = () => {
                 issuedAt: Date.now(),
             });
 
+            await sendSMS({
+                to: phone,
+                message:
+                    `Osuubiddwa ssente mu Liquid.\n` +
+                    `Omuwendo: UGX ${amount}\n` +
+                    `Ssente ziterekeddwa bulungi.`,
+            });
 
             alert("✅ Deposit recorded successfully");
             setAmount("");

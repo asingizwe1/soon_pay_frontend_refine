@@ -5,6 +5,7 @@
 // maxBorrowable
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
+import { sendSMS } from "../utils/sendSMS";
 
 const LoanSection = () => {
     //     Functions are not global
@@ -30,6 +31,15 @@ const LoanSection = () => {
     const handleRequest = async () => {
         try {
             await requestLoan(userId, amount);
+
+            await sendSMS({
+                to: phone,
+                message:
+                    `Empaako eyasabiiddwa eyise.\n` +
+                    `Omuwendo: UGX ${amount}\n` +
+                    `Jjukira okusasula mu budde.`,
+            });
+
             alert("Loan requested");
         } catch (e) {
             console.error(e);

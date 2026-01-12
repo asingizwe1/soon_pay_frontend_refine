@@ -6,6 +6,8 @@
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import VoucherDisplay from "./VoucherDisplay";
+import { sendSMS } from "../utils/sendSMS";
+
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
 
     const hasYield = totalLiquidStaked > 0;
@@ -34,6 +36,14 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                 amount: Number(amount),
                 code: crypto.randomUUID().slice(0, 8).toUpperCase(),
                 issuedAt: Date.now(),
+            });
+
+            await sendSMS({
+                to: phone,
+                message:
+                    `Okujjayo ssente kuyise bulungi.\n` +
+                    `UGX ${amount} zitumiddwa.\n` +
+                    `Webale nnyo.`,
             });
 
             alert("Withdraw successful");
