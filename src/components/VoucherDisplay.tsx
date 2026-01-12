@@ -27,8 +27,8 @@ const styles: any = {
         padding: 24,
         borderRadius: 12,
         background: active
-            ? "linear-gradient(135deg, #ffffff, #f9fafb)"
-            : "linear-gradient(135deg, #eef2ff, #f3f4f6)",
+            ? 'linear-gradient(135deg, #f8fafc, #eef2f7)'
+            : 'linear-gradient(135deg, #e5e7eb, #f3f4f6)',
         boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
         clipPath:
             "polygon(0 0, 100% 0, 100% 94%, 95% 100%, 90% 94%, 85% 100%, 80% 94%, 75% 100%, 70% 94%, 65% 100%, 60% 94%, 55% 100%, 50% 94%, 45% 100%, 40% 94%, 35% 100%, 30% 94%, 25% 100%, 20% 94%, 15% 100%, 10% 94%, 5% 100%, 0 94%)",
@@ -66,7 +66,8 @@ const styles: any = {
     qrBox: {
         width: 110,
         height: 110,
-        background: "#fff",
+        background: '#f8fafc',
+        boxShadow: 'inset 0 0 0 1px #e5e7eb',
         borderRadius: 8,
         display: "flex",
         alignItems: "center",
@@ -96,8 +97,8 @@ const styles: any = {
         borderRadius: 6,
         fontWeight: 700,
         letterSpacing: 1,
-        background: "#111827",
-        color: "#fff",
+        background: '#0b1220',
+        color: '#f8fafc',
         filter: active ? "none" : "blur(4px)",
     }),
 

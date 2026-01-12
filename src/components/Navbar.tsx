@@ -15,35 +15,20 @@ const Navbar = () => {
     };
 
     return (
-        <nav
-            style={{
-                position: 'fixed',
-                top: 0,
-                width: '100%',
-                background: '#0f172a',
-                color: 'white',
-                padding: '12px 24px',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 20,
-                zIndex: 1000
-            }}
-        >
-            {sections.map(sec => (
-                <button
-                    key={sec.id}
-                    onClick={() => scrollTo(sec.id)}
-                    style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'white',
-                        cursor: 'pointer',
-                        fontSize: 14
-                    }}
-                >
-                    {sec.label}
-                </button>
-            ))}
+        <nav className="navbar">
+            <div className="brand">LIQUID</div>
+
+            <div className="nav-links">
+                {sections.map(sec => (
+                    <button
+                        key={sec.id}
+                        onClick={() => scrollTo(sec.id)}
+                        className="nav-button"
+                    >
+                        {sec.label}
+                    </button>
+                ))}
+            </div>
         </nav>
     );
 };

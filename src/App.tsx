@@ -18,7 +18,8 @@ import WithdrawSection from "./components/WithdrawSection";
 import LoanSection from "./components/LoanSection";
 import TransactionsSection from "./components/TransactionsSection";
 import ProtocolSection from "./components/ProtocolSection";
-
+import { hooks } from '@/connectors/metamask';
+const { useIsActive } = hooks;
 const App = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [protocolStats, setProtocolStats] = useState<any>(null);
@@ -51,13 +52,16 @@ const App = () => {
     });
   });
   console.log("ENV CHECK:", import.meta.env.VITE_CORE_MICROBANK);
+  const isActive = useIsActive();
   return (
+  <>
+    {/* Fixed elements */}
+    <Navbar />
+    <DevWalletPanel />
 
-    <>
-      <Navbar />
-      <DevWalletPanel />
-
-      <div style={{ paddingTop: 70 }} />
+    {/* Scrollable + blur-target content */}
+    <main className={isActive ? 'app' : 'app blurred'}>
+      <div style={{ height: 64 }} /> {/* navbar spacer */}
 
       <UserSection />
       <DepositSection />
@@ -67,14 +71,15 @@ const App = () => {
       />
 
       <LoanSection />
-
       <TransactionsSection events={events} />
-
-      <ProtocolSection stats={protocolStats}
+      <ProtocolSection
+        stats={protocolStats}
         refreshProtocol={refreshProtocol}
       />
-    </>
-  );
+    </main>
+  </>
+);
+
 };
 
 export default App;
