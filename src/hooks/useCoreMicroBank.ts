@@ -140,9 +140,25 @@ export function useCoreMicroBank() {
 
   // 🏧 Withdraw
   const withdraw = async (userId: string, amount: string) => {
-    const contract = await getContract();
+    if (!window.ethereum) {
+      throw new Error("MetaMask not found");
+    }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+
+    const signer = provider.getSigner();
+    const to = await signer.getAddress();
+
+    const contract = new ethers.Contract(
+      CONTRACT_ADDRESS,
+      CoreMicroBankABI,
+      signer
+    );
+
     const parsed = ethers.utils.parseUnits(amount, 0);
-    const tx = await contract.withdraw(userId, parsed);
+
+    const tx = await contract.withdraw(userId, parsed, to);
     return tx.wait();
   };
 
@@ -160,3 +176,8 @@ export function useCoreMicroBank() {
     phoneToUserId
   };
 }
+// LIQ is owned by the protocol
+
+// Used as yield reserve
+
+// NOT owned by users at deposit time

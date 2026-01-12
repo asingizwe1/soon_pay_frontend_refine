@@ -67,6 +67,7 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
 
 
                 <button
+                    onClick={handleWithdraw}
                     disabled={!hasYield}
                     style={{
                         marginTop: 15,

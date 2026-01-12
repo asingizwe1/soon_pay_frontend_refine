@@ -1,7 +1,7 @@
 // components/VoucherDisplay.tsx
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
-
+import logo from "../assets/logo.png";
 import { toPng } from "html-to-image";
 import { useRef } from "react";
 
@@ -140,7 +140,7 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
 
                 {/* Logo */}
                 <img
-                    src="/assets/liquid-agent-logo.png"
+                    src={logo}
                     alt="Liquid Agent"
                     style={styles.logo}
                 />
