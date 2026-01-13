@@ -4,6 +4,7 @@ import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 //import { sendSMS } from "../utils/sendSMS";
 import { saveUserPhone } from "@/utils/userDictionary";
 import { phoneToUserId } from "@/utils/userId";
+import { notifySMS } from "@/utils/smsClient";
 //Do NOT mix useWeb3React and window.ethereum in the same app
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
@@ -33,6 +34,12 @@ const DepositSection = () => {
 
             // 🔥 THIS IS THE MISSING LINK
             await recordDeposit(phone, amount);
+
+            notifySMS(phone,
+                `Osuubiddwa ssente mu Liquid.\n` +
+                `Amount / Omuwendo: UGX ${amount}\n` +
+                `Webale nnyo / Thank you`
+            );
 
             setVoucher({
                 phone,

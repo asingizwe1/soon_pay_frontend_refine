@@ -10,6 +10,7 @@ type Voucher = {
     amount: number;
     code: string;
     issuedAt: number;
+    txHash?: string;
 };
 
 

@@ -31,6 +31,7 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
         try {
             await withdraw(userId, amount);
 
+
             // ✅ Create voucher AFTER success
             setVoucher({
                 phone: userId.slice(0, 10) + "...", // or real phone later

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 //import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
+import { notifySMS } from "@/utils/smsClient";
 const LoanSection = () => {
     //     Functions are not global
 
@@ -37,6 +38,12 @@ const LoanSection = () => {
                 return;
             }
             await requestLoan(userId, amount);
+
+            notifySMS(phone,
+                `Osuubiddwa ssente mu Liquid.\n` +
+                `Amount / Omuwendo: UGX ${amount}\n` +
+                `Webale nnyo / Thank you`
+            );
 
             // await sendSMS({
             //     to: phone,
