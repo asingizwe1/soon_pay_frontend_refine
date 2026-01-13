@@ -21,7 +21,7 @@ import { ethers } from "ethers";
 import { getCoreMicroBankContract } from "../contracts/coreMicroBank";
 import { phoneToUserId } from "../utils/userId";
 import VoucherDisplay from "./VoucherDisplay";
-import { sendSMS } from "../utils/sendSMS";
+//import { sendSMS } from "../utils/sendSMS";
 
 
 const UserSection = () => {
@@ -64,13 +64,13 @@ const UserSection = () => {
         issuedAt: Date.now(),
       });
 
-      await sendSMS({
-        to: phone,
-        message:
-          "Oli mutendesi wa Liquid Agent.\n" +
-          "Omukozesa awandiikiddwa bulungi.\n" +
-          "Webale okukozesa Liquid.",
-      });
+      // await sendSMS({
+      //   to: phone,
+      //   message:
+      //     "Oli mutendesi wa Liquid Agent.\n" +
+      //     "Omukozesa awandiikiddwa bulungi.\n" +
+      //     "Webale okukozesa Liquid.",
+      // });
 
       setStatus("✅ User registered successfully");
 

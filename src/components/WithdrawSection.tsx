@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import VoucherDisplay from "./VoucherDisplay";
-import { sendSMS } from "../utils/sendSMS";
+//import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
 
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
@@ -46,13 +46,13 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                 return;
             }
 
-            await sendSMS({
-                to: phone,
-                message:
-                    `Okujjayo ssente kuyise bulungi.\n` +
-                    `UGX ${amount} zitumiddwa.\n` +
-                    `Webale nnyo.`,
-            });
+            // await sendSMS({
+            //     to: phone,
+            //     message:
+            //         `Okujjayo ssente kuyise bulungi.\n` +
+            //         `UGX ${amount} zitumiddwa.\n` +
+            //         `Webale nnyo.`,
+            // });
 
             alert("Withdraw successful");
         } catch (err) {

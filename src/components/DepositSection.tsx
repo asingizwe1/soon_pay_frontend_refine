@@ -1,7 +1,7 @@
 import { useState } from "react";
 import VoucherDisplay from "./VoucherDisplay";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
-import { sendSMS } from "../utils/sendSMS";
+//import { sendSMS } from "../utils/sendSMS";
 import { saveUserPhone } from "@/utils/userDictionary";
 import { phoneToUserId } from "@/utils/userId";
 //Do NOT mix useWeb3React and window.ethereum in the same app
@@ -41,13 +41,13 @@ const DepositSection = () => {
                 issuedAt: Date.now(),
             });
 
-            await sendSMS({
-                to: phone,
-                message:
-                    `Osuubiddwa ssente mu Liquid.\n` +
-                    `Omuwendo: UGX ${amount}\n` +
-                    `Ssente ziterekeddwa bulungi.`,
-            });
+            // await sendSMS({
+            //     to: phone,
+            //     message:
+            //         `Osuubiddwa ssente mu Liquid.\n` +
+            //         `Omuwendo: UGX ${amount}\n` +
+            //         `Ssente ziterekeddwa bulungi.`,
+            // });
 
             alert("✅ Deposit recorded successfully");
 
