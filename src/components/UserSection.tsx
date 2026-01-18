@@ -22,21 +22,17 @@ import { getCoreMicroBankContract } from "../contracts/coreMicroBank";
 import { phoneToUserId } from "../utils/userId";
 import VoucherDisplay from "./VoucherDisplay";
 //import { sendSMS } from "../utils/sendSMS";
-
+import type { Voucher } from "@/types/voucher";
 
 const UserSection = () => {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
 
-  const [voucher, setVoucher] = useState<null | {
-    phone: string;
-    amount: number;
-    code: string;
-    issuedAt: number;
-  }>(null);
+  const [voucher, setVoucher] = useState<Voucher | null>(null);
 
 
   const registerUser = async () => {
+
     try {
       if (!window.ethereum) {
         alert("MetaMask not found");
@@ -54,6 +50,7 @@ const UserSection = () => {
 
       setStatus("Registering user on-chain...");
 
+
       const tx = await contract.registerUser(userId);
       await tx.wait();
 
@@ -62,6 +59,7 @@ const UserSection = () => {
         amount: 0,
         code: userId.slice(0, 10).toUpperCase(), // short ID fingerprint
         issuedAt: Date.now(),
+        txHash: tx.hash,
       });
 
       // await sendSMS({
@@ -75,9 +73,20 @@ const UserSection = () => {
       setStatus("✅ User registered successfully");
 
     } catch (err: any) {
-      console.error(err);
-      setStatus("❌ Registration failed");
-    }
+  console.error(err);
+
+  const message =
+    err?.error?.message ||
+    err?.data?.message ||
+    err?.reason ||
+    err?.message;
+
+  if (message?.includes("User exists")) {
+    setStatus("⚠️ User already exists");
+  } else {
+    setStatus("❌ Registration failed");
+  }
+}
   };
 
   return (

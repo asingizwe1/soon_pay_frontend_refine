@@ -4,14 +4,15 @@ import { QRCodeSVG } from "qrcode.react";
 import logo from "../assets/logo.png";
 import { toPng } from "html-to-image";
 import { useRef } from "react";
+import type { Voucher } from "@/types/voucher";
 
-type Voucher = {
-    phone: string;
-    amount: number;
-    code: string;
-    issuedAt: number;
-    txHash?: string;
-};
+// type Voucher = {
+//     phone: string;
+//     amount: number;
+//     code: string;
+//     issuedAt: number;
+//     txHash?: string;
+// };
 
 
 
@@ -73,6 +74,7 @@ const styles: any = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        cursor: "pointer",
     },
 
     qrPlaceholder: {
@@ -125,14 +127,18 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
         link.click();
     };
 
-    const qrPayload = hasVoucher
-        ? JSON.stringify({
-            type: voucher.amount === 0 ? "USER_REGISTRATION" : "VALUE_VOUCHER",
-            userId: voucher.code,
-            amount: voucher.amount,
-            issuedAt: voucher.issuedAt,
-        })
-        : "";
+    // const qrPayload = hasVoucher
+    //     ? JSON.stringify({
+    //         type: voucher.amount === 0 ? "USER_REGISTRATION" : "VALUE_VOUCHER",
+    //         userId: voucher.code,
+    //         amount: voucher.amount,
+    //         issuedAt: voucher.issuedAt,
+    //     })
+    //     : "";
+    const qrPayload =
+        hasVoucher && voucher?.txHash
+            ? `https://sepolia.etherscan.io/tx/${voucher.txHash}`
+            : "";
 
     return (
         <div style={styles.wrapper}>
@@ -156,55 +162,74 @@ const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
 
 
                 {/* Body */}
+
                 <div style={styles.body}>
                     {/* QR Section */}
                     <div style={styles.qrBox}>
-                        {hasVoucher ? (
-                            <QRCodeSVG
-                                value={qrPayload}
-                                size={100}
-                                bgColor="#ffffff"
-                                fgColor="#111827"
-                            />
-
-
+                        {hasVoucher && voucher?.txHash ? (
+                            <a
+                                href={`https://sepolia.etherscan.io/tx/${voucher.txHash}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ display: "inline-block", cursor: "pointer" }}
+                                title="View transaction on Etherscan"
+                            >
+                                <QRCodeSVG
+                                    value={`https://sepolia.etherscan.io/tx/${voucher.txHash}`}
+                                    size={100}
+                                    bgColor="#ffffff"
+                                    fgColor="#111827"
+                                />
+                            </a>
                         ) : (
                             <div style={styles.qrPlaceholder} />
                         )}
                     </div>
 
+
+                    {/* Later, you can replace the hardcoded URL with env:
+
+const EXPLORER = import.meta.env.VITE_EXPLORER_URL; */}
+
                     {/* Details */}
                     <div style={styles.details}>
                         <p style={styles.line}>
-                            <strong>Phone:</strong>{" "}
+                            <strong>Phone / Essimu:</strong>{" "}
                             {hasVoucher ? voucher!.phone : "••••••••"}
                         </p>
+
                         <p style={styles.line}>
-                            <strong>Amount:</strong>{" "}
+                            <strong>Amount / Omuwendo:</strong>{" "}
                             {hasVoucher ? `UGX ${voucher!.amount}` : "UGX ••••"}
                         </p>
+
+                        <p style={styles.line}>
+                            <strong>Issued / Yafunye ku:</strong>{" "}
+                            {hasVoucher
+                                ? new Date(voucher!.issuedAt).toLocaleString()
+                                : "••••••"}
+                        </p>
+
                         <p style={styles.code(hasVoucher)}>
                             {hasVoucher ? voucher!.code : "VOUCHER-CODE-XXXX"}
                         </p>
-                        <p style={styles.time}>
-                            {hasVoucher && (
-                                <button
-                                    onClick={downloadVoucher}
-                                    style={{
-                                        marginTop: 16,
-                                        width: "100%",
-                                        padding: 10,
-                                        background: "#111827",
-                                        color: "#fff",
-                                        borderRadius: 8,
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    ⬇ Download Voucher
-                                </button>
-                            )}
 
-                        </p>
+                        {hasVoucher && (
+                            <button
+                                onClick={downloadVoucher}
+                                style={{
+                                    marginTop: 16,
+                                    width: "100%",
+                                    padding: 10,
+                                    background: "#111827",
+                                    color: "#fff",
+                                    borderRadius: 8,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                ⬇ Download Voucher
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

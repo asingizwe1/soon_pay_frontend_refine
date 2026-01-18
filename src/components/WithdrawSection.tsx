@@ -8,16 +8,12 @@ import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import VoucherDisplay from "./VoucherDisplay";
 //import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
+import type { Voucher } from "@/types/voucher";
 
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
 
     const hasYield = totalLiquidStaked > 0;
-    const [voucher, setVoucher] = useState<null | {
-        phone: string;
-        amount: number;
-        code: string;
-        issuedAt: number;
-    }>(null);
+    const [voucher, setVoucher] = useState<Voucher | null>(null);
 
 
     const { withdraw } = useCoreMicroBank();
@@ -29,8 +25,9 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
         if (!userId || !amount) return alert("Missing fields");
 
         try {
-            await withdraw(userId, amount);
+            const tx = await withdraw(userId, amount);
 
+            console.log("WITHDRAW TX:", tx);
 
             // ✅ Create voucher AFTER success
             setVoucher({
@@ -38,8 +35,9 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                 amount: Number(amount),
                 code: crypto.randomUUID().slice(0, 8).toUpperCase(),
                 issuedAt: Date.now(),
+                txHash: tx.hash,
             });
-
+            await tx.wait();
             const phone = getUserPhone(userId);
 
             if (!phone) {

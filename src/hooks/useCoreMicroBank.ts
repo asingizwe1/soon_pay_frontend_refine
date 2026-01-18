@@ -88,7 +88,7 @@ export function useCoreMicroBank() {
     const contract = await getContract();
     const userId = phoneToUserId(phone);
     const tx = await contract.registerUser(userId);
-    return tx.wait();
+    return tx;//.wait();
   };
 
   // 💰 Record deposit
@@ -99,7 +99,7 @@ export function useCoreMicroBank() {
     const parsedAmount = ethers.utils.parseUnits(amount, 0); // integer UGX
 
     const tx = await contract.recordDeposit(userId, parsedAmount);
-    return tx.wait();
+    return tx;//.wait();
   };
 
 
@@ -143,7 +143,7 @@ export function useCoreMicroBank() {
     const contract = await getContract();
     const parsed = ethers.utils.parseUnits(amount, 0);
     const tx = await contract.repayLoan(userId, parsed);
-    return tx.wait();
+    return tx//.wait();
   };
 
   const maxBorrowable = async (userId: string) => {
@@ -173,7 +173,7 @@ export function useCoreMicroBank() {
     const parsed = ethers.utils.parseUnits(amount, 0);
 
     const tx = await contract.withdraw(userId, parsed, to);
-    return tx.wait();
+    return tx;//.wait();
   };
 
 

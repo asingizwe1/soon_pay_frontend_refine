@@ -8,14 +8,17 @@ import { notifySMS } from "@/utils/smsClient";
 //Do NOT mix useWeb3React and window.ethereum in the same app
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
+import type { Voucher } from "@/types/voucher";
+
 const DepositSection = () => {
     const { recordDeposit } = useCoreMicroBank();
-    const [voucher, setVoucher] = useState<null | {
-        phone: string;
-        amount: number;
-        code: string;
-        issuedAt: number;
-    }>(null);
+    // const [voucher, setVoucher] = useState<null | {
+    //     phone: string;
+    //     amount: number;
+    //     code: string;
+    //     issuedAt: number;
+    // }>(null);
+    const [voucher, setVoucher] = useState<Voucher | null>(null);
 
     const [phone, setPhone] = useState("");
     const [amount, setAmount] = useState("");
@@ -33,8 +36,10 @@ const DepositSection = () => {
             setLoading(true);
 
             // 🔥 THIS IS THE MISSING LINK
-            await recordDeposit(phone, amount);
+            // await recordDeposit(phone, amount);
+            const tx = await recordDeposit(phone, amount);
 
+            console.log("DEPOSIT TX:", tx);
             notifySMS(phone,
                 `Osuubiddwa ssente mu Liquid.\n` +
                 `Amount / Omuwendo: UGX ${amount}\n` +
@@ -46,8 +51,10 @@ const DepositSection = () => {
                 amount: Number(amount),
                 code: crypto.randomUUID().slice(0, 8).toUpperCase(),
                 issuedAt: Date.now(),
-            });
+                txHash: tx.hash,
 
+            });
+            await tx.wait();
             // await sendSMS({
             //     to: phone,
             //     message:
