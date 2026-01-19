@@ -9,7 +9,21 @@ import VoucherDisplay from "./VoucherDisplay";
 //import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
 import type { Voucher } from "@/types/voucher";
+const formCard = {
+    background: "#ffffff",
+    borderRadius: 16,
+    padding: 20,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+};
 
+const inputStyle = {
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: "1px solid #e5e7eb",
+    fontSize: 14,
+    outline: "none",
+};
 const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) => {
 
     const hasYield = totalLiquidStaked > 0;
@@ -63,21 +77,21 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
 
     return (
         <section id="withdraw" style={{ padding: "100px 20px" }}>
-            <h2>🏧 Withdraw</h2>
+            <h2> Withdraw</h2>
 
-            <div style={{ maxWidth: 400 }}>
+            <div style={{ maxWidth: 420, ...formCard }}>
                 <input
                     placeholder="User ID (bytes32)"
                     value={userId}
                     onChange={e => setUserId(e.target.value)}
-                    style={{ width: "100%", padding: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <input
                     placeholder="Amount"
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
-                    style={{ width: "100%", padding: 10, marginTop: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <VoucherDisplay voucher={voucher} />
@@ -87,11 +101,14 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                     onClick={handleWithdraw}
                     disabled={!hasYield}
                     style={{
-                        marginTop: 15,
+                        marginTop: 16,
                         width: "100%",
-                        padding: 10,
-                        background: hasYield ? "#22c55e" : "#6b7280",
-                        cursor: hasYield ? "pointer" : "not-allowed"
+                        padding: 12,
+                        borderRadius: 12,
+                        fontWeight: 600,
+                        background: hasYield ? "#111827" : "#9ca3af",
+                        color: "#fff",
+                        cursor: hasYield ? "pointer" : "not-allowed",
                     }}
                 >
                     Withdraw

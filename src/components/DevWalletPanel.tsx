@@ -1,3 +1,4 @@
+import "./DevWalletPanel.css";
 import MetaMaskCard from './MetaMaskCard';
 import SimpleConnectButton from './SimpleConnectButton';
 import ContractInteractionSample from './ContractInteractionSample';

@@ -9,7 +9,22 @@ import { notifySMS } from "@/utils/smsClient";
 // recordDeposit(bytes32 userId, uint256 amount)
 // THE REMOTE LIQUID VOUCHER
 import type { Voucher } from "@/types/voucher";
+// shared UI styles (put near top of file)
+const formCard = {
+    background: "#ffffff",
+    borderRadius: 16,
+    padding: 20,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+};
 
+const inputStyle = {
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: "1px solid #f1f5f9",
+    fontSize: 14,
+    outline: "none",
+};
 const DepositSection = () => {
     const { recordDeposit } = useCoreMicroBank();
     // const [voucher, setVoucher] = useState<null | {
@@ -84,16 +99,16 @@ const DepositSection = () => {
             id="deposit"
             style={{ padding: "100px 20px", minHeight: "100vh" }}
         >
-            <h2>💰 Deposit</h2>
+            <h2> Deposit</h2>
             <p>Agent records off-chain cash or mobile money deposits</p>
 
-            <div style={{ maxWidth: 400 }}>
+            <div style={{ maxWidth: 410, ...formCard }}>
                 <input
                     type="text"
                     placeholder="User phone number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    style={{ width: "100%", padding: 10, marginBottom: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <input
@@ -101,7 +116,7 @@ const DepositSection = () => {
                     placeholder="Amount (UGX)"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    style={{ width: "100%", padding: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <VoucherDisplay voucher={voucher} />
@@ -110,7 +125,16 @@ const DepositSection = () => {
                 <button
                     onClick={handleDeposit}
                     disabled={loading}
-                    style={{ marginTop: 15, width: "100%", padding: 10 }}
+                    style={{
+                        marginTop: 16,
+                        width: "100%",
+                        padding: 12,
+                        borderRadius: 12,
+                        fontWeight: 600,
+                        background: "#111827",
+                        color: "#fff",
+                        cursor: "pointer",
+                    }}
                 >
                     {loading ? "Recording..." : "Record Deposit"}
                 </button>

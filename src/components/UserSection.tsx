@@ -23,7 +23,23 @@ import { phoneToUserId } from "../utils/userId";
 import VoucherDisplay from "./VoucherDisplay";
 //import { sendSMS } from "../utils/sendSMS";
 import type { Voucher } from "@/types/voucher";
+// shared UI styles (put near top of file)
+const formCard = {
+  background: "#ffffff",
+  borderRadius: 16,
+  padding: 20,
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  maxWidth: 700,
+};
 
+const inputStyle = {
+  width: "95%",
+  padding: "12px 14px",
+  borderRadius: 10,
+  border: "1px solid #e5e7eb",
+  fontSize: 14,
+  outline: "none",
+};
 const UserSection = () => {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
@@ -73,42 +89,61 @@ const UserSection = () => {
       setStatus("✅ User registered successfully");
 
     } catch (err: any) {
-  console.error(err);
+      console.error(err);
 
-  const message =
-    err?.error?.message ||
-    err?.data?.message ||
-    err?.reason ||
-    err?.message;
+      const message =
+        err?.error?.message ||
+        err?.data?.message ||
+        err?.reason ||
+        err?.message;
 
-  if (message?.includes("User exists")) {
-    setStatus("⚠️ User already exists");
-  } else {
-    setStatus("❌ Registration failed");
-  }
-}
+      if (message?.includes("User exists")) {
+        setStatus("⚠️ User already exists");
+      } else {
+        setStatus("❌ Registration failed");
+      }
+    }
   };
 
   return (
     <section id="user" style={{ padding: "100px 20px", minHeight: "100vh" }}>
-      <h2>👤 User Registration</h2>
+      <h2> User Registration</h2>
 
-      <input
-        type="text"
-        placeholder="User phone number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        style={{ padding: 8, width: 250 }}
-      />
+      <div style={formCard}>
+        <input
+          type="text"
+          placeholder="User phone number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          style={inputStyle}
+        />
 
-      <br /><br />
+        <button
+          onClick={registerUser}
+          style={{
+            marginTop: 14,
+            width: "100%",
+            padding: 12,
+            borderRadius: 10,
+            border: "none",
+            background: "#2563eb",
+            color: "#fff",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Register User
+        </button>
 
-      <button onClick={registerUser}>
-        Register User
-      </button>
+        {status && (
+          <p style={{ marginTop: 12, fontSize: 14 }}>
+            {status}
+          </p>
+        )}
 
-      <p>{status}</p>
-      <VoucherDisplay voucher={voucher} />
+        <VoucherDisplay voucher={voucher} />
+      </div>
+
 
     </section>
   );

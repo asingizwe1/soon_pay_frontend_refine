@@ -1,0 +1,45 @@
+.agent-panel {
+    position: fixed;
+    top: 70px;
+    /* just below navbar */
+    right: 20px;
+
+    width: 300px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+
+    z-index: 900;
+}
+
+/* Title */
+.agent-panel h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* MetaMask + buttons spacing */
+.agent-panel>* {
+    margin-bottom: 12px;
+}
+
+/* Contract interaction dropdown */
+.agent-panel details summary {
+    font-weight: 600;
+    color: #374151;
+}
+
+.agent-panel details {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}

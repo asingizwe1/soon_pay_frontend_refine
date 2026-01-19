@@ -8,6 +8,32 @@ import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 //import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
 import { notifySMS } from "@/utils/smsClient";
+// shared UI styles (put near top of file)
+const formCard = {
+    background: "#ffffff",
+    borderRadius: 16,
+    padding: 20,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+};
+
+const inputStyle = {
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: "1px solid #f1f5f9",
+    fontSize: 14,
+    outline: "none",
+};
+const actionBtn = {
+    marginTop: 12,
+    width: "100%",
+    padding: 12,
+    borderRadius: 12,
+    background: "#111827",
+    color: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+};
 const LoanSection = () => {
     //     Functions are not global
 
@@ -89,42 +115,32 @@ const LoanSection = () => {
 
     return (
         <section id="loan" style={{ padding: "100px 20px" }}>
-            <h2>🏦 Loans</h2>
+            <h2> Loans</h2>
 
-            <div style={{ maxWidth: 400 }}>
+            <div style={{ maxWidth: 400, ...formCard }}>
                 <input
                     placeholder="User ID (bytes32)"
                     value={userId}
                     onChange={e => setUserId(e.target.value)}
-                    style={{ width: "100%", padding: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <input
                     placeholder="Amount"
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
-                    style={{ width: "100%", padding: 10, marginTop: 10 }}
+                    style={{ ...inputStyle, width: "90%" }}
                 />
 
-                <button
-                    onClick={handleRequest}
-                    style={{ marginTop: 10, width: "100%", padding: 10 }}
-                >
+                <button style={actionBtn} onClick={handleRequest}>
                     Request Loan
                 </button>
 
-                <button
-                    disabled={!userId || !amount}
-                    onClick={handleRepay}
-                    style={{ marginTop: 10, width: "100%", padding: 10 }}
-                >
+                <button style={actionBtn} onClick={handleRepay}>
                     Repay Loan
                 </button>
 
-                <button
-                    onClick={handleMaxBorrowable}
-                    style={{ marginTop: 10, width: "100%", padding: 10 }}
-                >
+                <button style={actionBtn} onClick={handleMaxBorrowable}>
                     Check Max Borrowable
                 </button>
 

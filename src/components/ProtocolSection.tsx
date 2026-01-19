@@ -5,44 +5,115 @@ type ProtocolSectionProps = {
     refreshProtocol: () => Promise<void>;
 };
 
+
+const cardGrid = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: 20,
+    marginTop: 20,
+};
+
+const statCard = {
+    background: "#f9fafb",
+    borderRadius: 14,
+    padding: 18,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
+    border: "1px solid #e5e7eb",
+};
+
+const statLabel = {
+    fontSize: 13,
+    color: "#6b7280",
+    marginBottom: 6,
+};
+
+const statValue = {
+    fontSize: 20,
+    fontWeight: 700,
+    color: "#111827",
+};
 const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
     const { convertFeesAndStake } = useCoreMicroBank();
     return (
-        <section id="protocol" style={{ padding: "100px 20px" }}>
-            <h2>🏛 Protocol</h2>
+        <section
+            id="protocol"
+            style={{
+                padding: "100px 20px",
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+            }}
+        >
+            <h2> Protocol Dashboard</h2>
+            <p style={{ color: "#6b7280", marginBottom: 30 }}>
+                Live system treasury & staking controls
+            </p>
 
             {!stats ? (
                 <p>Loading protocol data...</p>
             ) : (
-                <ul>
-                    <li>Protocol Fee Pool: {stats.feePool}</li>
-                    <li>Total Liquid Staked: {stats.totalStaked}</li>
-                    <li>Protocol LIQ Balance: {stats.liquidBalance}</li>
-                </ul>
-            )}
-            <button
-                style={{
-                    marginTop: 20,
-                    padding: 10,
-                    width: "100%",
-                    background: "#22c55e",
-                    color: "black",
-                    fontWeight: "bold"
-                }}
-                onClick={async () => {
-                    try {
-                        await convertFeesAndStake();
-                        await refreshProtocol();
-                        alert("Fees converted to LIQ ✅");
-                    } catch (e) {
-                        alert("Conversion failed ❌");
-                        console.error(e);
-                    }
-                }}
-            >
-                🔄 Convert Fees → LIQ (Admin)
-            </button>
+                <div style={{ width: "100%", maxWidth: 800 }}>
+                    {/* Stat Cards */}
+                    <div style={cardGrid}>
+                        <div style={statCard}>
+                            <div style={statLabel}>Protocol Fee Pool</div>
+                            <div style={statValue}>{stats.feePool}</div>
+                        </div>
 
+                        <div style={statCard}>
+                            <div style={statLabel}>Total Liquid Staked</div>
+                            <div style={statValue}>{stats.totalStaked}</div>
+                        </div>
+
+                        <div style={statCard}>
+                            <div style={statLabel}>Protocol LIQ Balance</div>
+                            <div style={statValue}>{stats.liquidBalance}</div>
+                        </div>
+                    </div>
+
+                    {/* Admin Action */}
+                    <div
+                        style={{
+                            marginTop: 40,
+                            padding: 24,
+                            borderRadius: 16,
+                            background: "#111827",
+                            color: "white",
+                            boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                        }}
+                    >
+                        <h3 style={{ marginBottom: 10 }}>Admin Controls</h3>
+                        <p style={{ fontSize: 14, color: "#9ca3af", marginBottom: 16 }}>
+                            Convert accumulated fees into LIQ and stake into protocol yield pool.
+                        </p>
+
+                        <button
+                            style={{
+                                padding: "12px 20px",
+                                borderRadius: 10,
+                                border: "none",
+                                background: "#2563eb",   // 🔥 Professional blue instead of green
+                                color: "white",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                            }}
+                            onClick={async () => {
+                                try {
+                                    await convertFeesAndStake();
+                                    await refreshProtocol();
+                                    alert("Fees converted to LIQ ✅");
+                                } catch (e) {
+                                    alert("Conversion failed ❌");
+                                    console.error(e);
+                                }
+                            }}
+                        >
+                            Convert Fees → Stake LIQ
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };

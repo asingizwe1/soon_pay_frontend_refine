@@ -1,3 +1,4 @@
+import "../Navbar.css";
 const sections = [
     { label: 'User', id: 'user' },
     { label: 'Deposit', id: 'deposit' },
