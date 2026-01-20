@@ -51,6 +51,11 @@
 ///////////////sandbox
 //https://api.sandbox.africastalking.com/...this only simulates on postman
 /////////////////////
+import dotenv from "dotenv";
+dotenv.config();
+console.log("API KEY:", process.env.AT_API_KEY);
+console.log("USERNAME:", process.env.AT_USERNAME);
+
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
