@@ -176,7 +176,7 @@ export function useCoreMicroBank() {
 
     // amount is UGX (human), but bonus is paid in LIQ (18 decimals logic inside contract)
     // So we must scale amount to 18 decimals before sending
-    const parsed = ethers.utils.parseUnits(amount, 18);
+    const parsed = ethers.utils.parseUnits(amount, 0);
 
     const tx = await contract.withdraw(userId, parsed, to);
     return tx;//.wait();

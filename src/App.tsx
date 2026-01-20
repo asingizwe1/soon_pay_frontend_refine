@@ -36,6 +36,7 @@ const App = () => {
   // }, []);
   const refreshProtocol = async () => {
     const stats = await getProtocolStats();
+    console.log("Protocol LIQ balance:", stats.liquidBalance);
     setProtocolStats(stats);
   };
 
@@ -54,31 +55,31 @@ const App = () => {
   console.log("ENV CHECK:", import.meta.env.VITE_CORE_MICROBANK);
   const isActive = useIsActive();
   return (
-  <>
-    {/* Fixed elements */}
-    <Navbar />
-    <DevWalletPanel />
+    <>
+      {/* Fixed elements */}
+      <Navbar />
+      <DevWalletPanel />
 
-    {/* Scrollable + blur-target content */}
-    <main className={isActive ? 'app' : 'app blurred'}>
-      <div style={{ height: 64 }} /> {/* navbar spacer */}
+      {/* Scrollable + blur-target content */}
+      <main className={isActive ? 'app' : 'app blurred'}>
+        <div style={{ height: 64 }} /> {/* navbar spacer */}
 
-      <UserSection />
-      <DepositSection />
+        <UserSection />
+        <DepositSection />
 
-      <WithdrawSection
-        totalLiquidStaked={Number(protocolStats?.totalStaked ?? 0)}
-      />
+        <WithdrawSection
+          totalLiquidStaked={Number(protocolStats?.totalStaked ?? 0)}
+        />
 
-      <LoanSection />
-      <TransactionsSection events={events} />
-      <ProtocolSection
-        stats={protocolStats}
-        refreshProtocol={refreshProtocol}
-      />
-    </main>
-  </>
-);
+        <LoanSection />
+        <TransactionsSection events={events} />
+        <ProtocolSection
+          stats={protocolStats}
+          refreshProtocol={refreshProtocol}
+        />
+      </main>
+    </>
+  );
 
 };
 

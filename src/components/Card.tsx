@@ -31,12 +31,12 @@ const Card = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        width: '20rem',
+        width: '14rem',
         padding: '1rem',
         margin: '1rem',
         overflow: 'auto',
         border: '1px solid',
-        borderRadius: '1rem'
+        borderRadius: '1rem', color: "black"
       }}>
       <b>{getName(connector)}</b>
       <div style={{ marginBottom: '1rem' }}>

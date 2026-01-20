@@ -54,27 +54,7 @@ body {
     transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
-.agent-panel {
-    position: fixed;
-    top: 80px;
-    /* below navbar */
-    right: 24px;
-    width: 320px;
-    z-index: 1100;
-    /* ABOVE blur layer */
-
-    background: linear-gradient(180deg,
-            rgba(17, 24, 39, 0.9),
-            rgba(8, 13, 25, 0.9));
-
-    backdrop-filter: blur(14px);
-    border-radius: 16px;
-    padding: 24px;
-
-    box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
+/*  */
 
 .app.blurred {
     filter: blur(10px);
