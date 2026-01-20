@@ -71,7 +71,6 @@ app.post("/sms", async (req, res) => {
 
     try {
         const response = await fetch(
-            // 🔥 LIVE BULK ENDPOINT
             "https://api.africastalking.com/version1/messaging/bulk",
             {
                 method: "POST",
@@ -82,22 +81,30 @@ app.post("/sms", async (req, res) => {
                 },
                 body: JSON.stringify({
                     username: process.env.AT_USERNAME,
-                    message,
-                    phoneNumbers: [to],        // MUST be array
-                    // senderId: "LIQUID",     // optional (only if you registered one)
+                    phoneNumbers: [to],   // MUST be array
+                    message: message,
                 }),
             }
         );
 
-        const data = await response.json();
+        const text = await response.text();   // 👈 IMPORTANT: read raw first
+        console.log("📡 Raw Africa's Talking response:", text);
 
-        console.log("📡 Africa's Talking response:", JSON.stringify(data, null, 2));
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            console.error("❌ Not JSON response from Africa's Talking");
+            return res.json({ ok: false, raw: text });
+        }
+
+        console.log("✅ Parsed SMS response:", data);
 
         res.json({ ok: true, data });
 
     } catch (err) {
         console.error("❌ SMS error:", err);
-        res.json({ ok: false, error: err.message });
+        res.json({ ok: false });
     }
 });
 

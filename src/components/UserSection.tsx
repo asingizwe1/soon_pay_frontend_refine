@@ -81,7 +81,7 @@ const UserSection = () => {
         issuedAt: Date.now(),
         txHash: tx.hash,
       });
-      notifySMS(phone,
+      await notifySMS(phone,
         `Osuubiddwa ssente mu Liquid.\n` +
         `Omukozesa awandiikiddwa bulungi.\n` +
         `Webale nnyo / Thank you`
