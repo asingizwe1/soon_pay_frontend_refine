@@ -1,3 +1,56 @@
+// import express from "express";
+// import fetch from "node-fetch";
+// import cors from "cors";
+
+// const app = express();
+// app.use(cors());
+// app.use(express.json());
+
+// app.post("/sms", async (req, res) => {
+//     const { to, message } = req.body;
+
+//     console.log("📨 Incoming SMS request:", to, message);
+
+//     try {
+//         const response = await fetch(
+//             // "https://api.sandbox.africastalking.com/version1/messaging"
+//             "https://api.africastalking.com/version1/messaging",
+//             {
+//                 method: "POST",
+//                 headers: {
+//                     Accept: "application/json",
+//                     "Content-Type": "application/x-www-form-urlencoded",
+//                     apiKey: process.env.AT_API_KEY,
+//                 },
+//                 body: new URLSearchParams({
+//                     username: process.env.AT_USERNAME,
+//                     to,
+//                     message,
+//                 }),
+//             }
+//         );
+
+//         const data = await response.json();
+
+//         console.log("📡 Africa's Talking response:", data);
+
+//         // 🚨 SMS failure MUST NOT break frontend
+//         res.json({ ok: true, data });
+
+//     } catch (err) {
+//         console.error("SMS error:", err);
+//         res.json({ ok: false });
+//     }
+// });
+
+// app.listen(3001, () => {
+//     console.log("SMS server running on http://localhost:3001");
+// });
+
+
+///////////////sandbox
+//https://api.sandbox.africastalking.com/...this only simulates on postman
+/////////////////////
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
@@ -9,32 +62,37 @@ app.use(express.json());
 app.post("/sms", async (req, res) => {
     const { to, message } = req.body;
 
+    console.log("📨 Incoming SMS request:", to, message);
+
     try {
         const response = await fetch(
-            "https://api.sandbox.africastalking.com/version1/messaging",
+            // 🔥 LIVE BULK ENDPOINT
+            "https://api.africastalking.com/version1/messaging/bulk",
             {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
-                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Content-Type": "application/json",
                     apiKey: process.env.AT_API_KEY,
                 },
-                body: new URLSearchParams({
+                body: JSON.stringify({
                     username: process.env.AT_USERNAME,
-                    to,
                     message,
+                    phoneNumbers: [to],        // MUST be array
+                    // senderId: "LIQUID",     // optional (only if you registered one)
                 }),
             }
         );
 
         const data = await response.json();
 
-        // 🚨 SMS failure MUST NOT break frontend
+        console.log("📡 Africa's Talking response:", JSON.stringify(data, null, 2));
+
         res.json({ ok: true, data });
 
     } catch (err) {
-        console.error("SMS error:", err);
-        res.json({ ok: false });
+        console.error("❌ SMS error:", err);
+        res.json({ ok: false, error: err.message });
     }
 });
 

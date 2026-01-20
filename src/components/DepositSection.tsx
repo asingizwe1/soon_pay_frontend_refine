@@ -53,7 +53,7 @@ const DepositSection = () => {
             // 🔥 THIS IS THE MISSING LINK
             // await recordDeposit(phone, amount);
             const tx = await recordDeposit(phone, amount);
-
+            await tx.wait();
             console.log("DEPOSIT TX:", tx);
             notifySMS(phone,
                 `Osuubiddwa ssente mu Liquid.\n` +
@@ -69,7 +69,7 @@ const DepositSection = () => {
                 txHash: tx.hash,
 
             });
-            await tx.wait();
+
             // await sendSMS({
             //     to: phone,
             //     message:

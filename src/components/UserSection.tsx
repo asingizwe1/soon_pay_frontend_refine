@@ -23,6 +23,10 @@ import { phoneToUserId } from "../utils/userId";
 import VoucherDisplay from "./VoucherDisplay";
 //import { sendSMS } from "../utils/sendSMS";
 import type { Voucher } from "@/types/voucher";
+import { notifySMS } from "@/utils/smsClient";
+//import { sendSMS } from "@/utils/sendSMS";
+
+
 // shared UI styles (put near top of file)
 const formCard = {
   background: "#ffffff",
@@ -77,7 +81,11 @@ const UserSection = () => {
         issuedAt: Date.now(),
         txHash: tx.hash,
       });
-
+      notifySMS(phone,
+        `Osuubiddwa ssente mu Liquid.\n` +
+        `Omukozesa awandiikiddwa bulungi.\n` +
+        `Webale nnyo / Thank you`
+      );
       // await sendSMS({
       //   to: phone,
       //   message:
