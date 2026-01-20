@@ -1,3 +1,7 @@
+//“LIQ is owned by the protocol, used as yield reserve, NOT owned by users at deposit time
+
+
+
 // “Deposits generate protocol fees.
 // Those fees are periodically converted into a yield-bearing Liquid position owned by the protocol.
 // When a user successfully withdraws — with no outstanding loan — they receive a LIQ bonus paid from protocol yield.”
@@ -170,7 +174,9 @@ export function useCoreMicroBank() {
       signer
     );
 
-    const parsed = ethers.utils.parseUnits(amount, 0);
+    // amount is UGX (human), but bonus is paid in LIQ (18 decimals logic inside contract)
+    // So we must scale amount to 18 decimals before sending
+    const parsed = ethers.utils.parseUnits(amount, 18);
 
     const tx = await contract.withdraw(userId, parsed, to);
     return tx;//.wait();
