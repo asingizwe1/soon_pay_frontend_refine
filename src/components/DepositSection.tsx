@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VoucherDisplay from "./VoucherDisplay";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 //import { sendSMS } from "../utils/sendSMS";
@@ -25,7 +25,28 @@ const inputStyle = {
     fontSize: 14,
     outline: "none",
 };
+//////////////
+
 const DepositSection = () => {
+    const [amount, setAmount] = useState("");
+    const [usdPreview, setUsdPreview] = useState<number | null>(null);
+
+    const UGX_PER_USD = 3600; // demo rate (replace later with Chainlink feed)
+
+    useEffect(() => {
+        if (!amount) {
+            setUsdPreview(null);
+            return;
+        }
+
+        const ugx = Number(amount);
+        if (isNaN(ugx)) return;
+
+        const usd = ugx / UGX_PER_USD;
+        setUsdPreview(usd);
+    }, [amount]);
+
+    ///////////////
     const { recordDeposit } = useCoreMicroBank();
     // const [voucher, setVoucher] = useState<null | {
     //     phone: string;
@@ -36,7 +57,7 @@ const DepositSection = () => {
     const [voucher, setVoucher] = useState<Voucher | null>(null);
 
     const [phone, setPhone] = useState("");
-    const [amount, setAmount] = useState("");
+    // const [amount, setAmount] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleDeposit = async () => {
@@ -52,7 +73,13 @@ const DepositSection = () => {
 
             // 🔥 THIS IS THE MISSING LINK
             // await recordDeposit(phone, amount);
-            const tx = await recordDeposit(phone, amount);
+            const ugx = Number(amount);
+            const usdAmount = ugx / UGX_PER_USD;
+
+            // round or floor to avoid decimals
+            const protocolAmount = Math.floor(usdAmount);
+
+            const tx = await recordDeposit(phone, protocolAmount.toString());
             await tx.wait();
             console.log("DEPOSIT TX:", tx);
             notifySMS(phone,
@@ -117,7 +144,11 @@ const DepositSection = () => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     style={{ ...inputStyle, width: "90%" }}
-                />
+                />{usdPreview !== null && (
+                    <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 6 }}>
+                        ≈ ${usdPreview.toFixed(2)} USD
+                    </div>
+                )}
 
                 <VoucherDisplay voucher={voucher} />
 

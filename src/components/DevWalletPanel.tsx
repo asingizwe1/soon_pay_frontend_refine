@@ -2,7 +2,7 @@ import "./DevWalletPanel.css";
 import MetaMaskCard from './MetaMaskCard';
 import SimpleConnectButton from './SimpleConnectButton';
 import ContractInteractionSample from './ContractInteractionSample';
-
+import logo from '../assets/logo.png';
 const DevWalletPanel = () => {
     return (
         <div className="agent-panel"
@@ -18,9 +18,13 @@ const DevWalletPanel = () => {
         //     boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
         //     zIndex: 999
         // }}
-        >
-            <h3 style={{ marginTop: 0 }}>Agent Panel</h3>
 
+        >
+            <div className="agent-header">
+                <div className="agent-logo"> <img src={logo} alt="LIQ logo" /> </div>
+
+                <h3 style={{ marginTop: 0 }}>Agent Panel</h3>
+            </div>
             <MetaMaskCard />
 
             <div style={{ marginTop: 10 }}>

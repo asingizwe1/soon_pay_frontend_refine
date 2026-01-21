@@ -11,6 +11,7 @@ const cardGrid = {
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
     gap: 20,
     marginTop: 20,
+    width: "80%",
 };
 
 const statCard = {

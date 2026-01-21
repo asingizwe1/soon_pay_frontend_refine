@@ -56,12 +56,14 @@ const valueStyle = {
 };
 
 const cardStyle = {
-    background: "#0b1220",
-    borderRadius: 14,
+    background: "#020617",
+    borderRadius: 16,
     padding: 16,
     marginBottom: 14,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.05)",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
     maxWidth: 780,
+    color: "#e5e7eb",
 };
 
 const rowStyle = {
@@ -69,15 +71,32 @@ const rowStyle = {
     justifyContent: "space-between",
     marginBottom: 6,
 };
+const decodeBN = (bn: any) => {
+    try {
+        return parseInt(bn.hex, 16);
+    } catch {
+        return "—";
+    }
+};
 
 const TransactionCard = ({ event }: Props) => {
     return (
         <div style={cardStyle}>
-            {/* Header */}
-            <div style={{ marginBottom: 10 }}>
-                <strong>{event.type}</strong>
-            </div>
-
+          {/* Header */}
+<div style={{ marginBottom: 10 }}>
+  <span
+    style={{
+      background: "#1d4ed8",
+      color: "white",
+      fontSize: 12,
+      padding: "4px 10px",
+      borderRadius: 999,
+      fontWeight: 600,
+    }}
+  >
+    {event.type}
+  </span>
+</div>
             {/* Common fields */}
             {event.userId && (
                 <div style={rowStyle}>
@@ -101,41 +120,42 @@ const TransactionCard = ({ event }: Props) => {
             )}
 
             {/* Amount fields */}
-            {event.amount && (
+            {event.amount !== undefined && (
                 <div style={rowStyle}>
                     <span style={labelStyle}>Amount</span>
                     <span style={valueStyle}>
-                        {parseInt(event.amount.hex, 16)}
+                        {decodeBN(event.amount)}
                     </span>
                 </div>
             )}
 
-            {event.gross && (
-                <div style={rowStyle}>
-                    <span style={labelStyle}>Gross</span>
-                    <span style={valueStyle}>
-                        {parseInt(event.gross.hex, 16)}
-                    </span>
-                </div>
-            )}
+           {event.gross !== undefined && (
+  <div style={rowStyle}>
+    <span style={labelStyle}>Gross</span>
+    <span style={valueStyle}>
+      {decodeBN(event.gross)}
+    </span>
+  </div>
+)}
 
-            {event.fee && (
-                <div style={rowStyle}>
-                    <span style={labelStyle}>Fee</span>
-                    <span style={valueStyle}>
-                        {parseInt(event.fee.hex, 16)}
-                    </span>
-                </div>
-            )}
+{event.fee !== undefined && (
+  <div style={rowStyle}>
+    <span style={labelStyle}>Fee</span>
+    <span style={valueStyle}>
+      {decodeBN(event.fee)}
+    </span>
+  </div>
+)}
 
-            {event.net && (
-                <div style={rowStyle}>
-                    <span style={labelStyle}>Net</span>
-                    <span style={valueStyle}>
-                        {parseInt(event.net.hex, 16)}
-                    </span>
-                </div>
-            )}
+{event.net !== undefined && (
+  <div style={rowStyle}>
+    <span style={labelStyle}>Net</span>
+    <span style={valueStyle}>
+      {decodeBN(event.net)}
+    </span>
+  </div>
+)}
+
         </div>
     );
 };
