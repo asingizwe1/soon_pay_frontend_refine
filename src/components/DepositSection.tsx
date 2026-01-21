@@ -26,8 +26,10 @@ const inputStyle = {
     outline: "none",
 };
 //////////////
-
-const DepositSection = () => {
+type DepositSectionProps = {
+    refreshProtocol: () => Promise<void>;
+};
+const DepositSection = ({ refreshProtocol }: DepositSectionProps) => {
     const [amount, setAmount] = useState("");
     const [usdPreview, setUsdPreview] = useState<number | null>(null);
 
@@ -81,7 +83,9 @@ const DepositSection = () => {
 
             const tx = await recordDeposit(phone, protocolAmount.toString());
             await tx.wait();
+            await refreshProtocol();
             console.log("DEPOSIT TX:", tx);
+
             notifySMS(phone,
                 `Osuubiddwa ssente mu Liquid.\n` +
                 `Amount / Omuwendo: UGX ${amount}\n` +

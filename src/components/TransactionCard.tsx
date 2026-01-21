@@ -72,12 +72,24 @@ const rowStyle = {
     marginBottom: 6,
 };
 const decodeBN = (bn: any) => {
-    try {
-        return parseInt(bn.hex, 16);
-    } catch {
-        return "—";
-    }
+  if (bn === undefined || bn === null) return "—";
+
+  try {
+    // ethers v6 BigInt
+    if (typeof bn === "bigint") return bn.toString();
+
+    // ethers v5 BigNumber
+    if (bn._isBigNumber) return bn.toString();
+
+    // hex fallback
+    if (bn.hex) return parseInt(bn.hex, 16).toString();
+
+    return String(bn);
+  } catch {
+    return "—";
+  }
 };
+
 
 const TransactionCard = ({ event }: Props) => {
     return (

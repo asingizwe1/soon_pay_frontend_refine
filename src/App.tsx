@@ -65,7 +65,7 @@ const App = () => {
         <div style={{ height: 64 }} /> {/* navbar spacer */}
 
         <UserSection />
-        <DepositSection />
+        <DepositSection refreshProtocol={refreshProtocol} />
 
         <WithdrawSection
           totalLiquidStaked={Number(protocolStats?.totalStaked ?? 0)}
