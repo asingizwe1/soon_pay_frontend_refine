@@ -1,75 +1,83 @@
-// Agent enters numeric ID
-
-// Frontend hashes → bytes32 (later)
-
-// Calls registerUser(userId)
-
-//Proof that a cryptographic identity was created on-chain
-// Account creation receipt
-
-// Identity card
-
-// Activation slip
-
-
-// Users are represented by hashed identifiers.
-// Agents register users on-chain using a custodial accounting model.
-// No personal data is stored — only cryptographic identifiers.”
-//even if you can decrypt you cant decrypt the secret_value
+// UserSection.tsx (polished layout + search styling + userId on voucher)
 import { useState } from "react";
 import { ethers } from "ethers";
 import { getCoreMicroBankContract } from "../contracts/coreMicroBank";
 import { phoneToUserId } from "../utils/userId";
 import VoucherDisplay from "./VoucherDisplay";
-//import { sendSMS } from "../utils/sendSMS";
 import type { Voucher } from "@/types/voucher";
 import { notifySMS } from "@/utils/smsClient";
-//import { sendSMS } from "@/utils/sendSMS";
+import { useCoreMicroBank } from "@/hooks/useCoreMicroBank";
 
+const pageWrap = {
 
-// shared UI styles (put near top of file)
-const formCard = {
-  background: "#ffffff",
-  borderRadius: 16,
-  padding: 20,
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-  maxWidth: 700,
+  maxWidth: 920,              // wider so cards breathe
+  marginLeft: 0,            // pull section left
+  marginRight: "auto",
+  padding: "60px 20px 20px",  // reduce bottom padding
 };
 
-const inputStyle = {
-  width: "95%",
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "minmax(320px, 420px) minmax(320px, 420px)",
+  gap: 20,            // more breathing room between cards
+};
+
+const card = {
+  background: "#ffffff",
+  borderRadius: 16,
+  padding: 24,   // slightly more vertical balance
+  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+};
+
+const input = {
+  width: "90%",
   padding: "12px 14px",
   borderRadius: 10,
   border: "1px solid #e5e7eb",
   fontSize: 14,
   outline: "none",
 };
+
+const button = {
+  marginTop: 14,
+  width: "100%",
+  padding: 12,
+  borderRadius: 10,
+  border: "none",
+  background: "#2563eb",
+  color: "#fff",
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+const muted = { color: "#6b7280", fontSize: 13 };
+
 const UserSection = () => {
+  const [searchPhone, setSearchPhone] = useState("");
+  const [userState, setUserState] = useState<any>(null);
+  const { getUserState } = useCoreMicroBank();
+
+  const handleSearch = async () => {
+    const state = await getUserState(searchPhone);
+    setUserState(state);
+  };
+
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
-
   const [voucher, setVoucher] = useState<Voucher | null>(null);
 
-
   const registerUser = async () => {
-
     try {
-      if (!window.ethereum) {
-        alert("MetaMask not found");
-        return;
-      }
+      if (!window.ethereum) return alert("MetaMask not found");
 
       setStatus("Waiting for wallet...");
-
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
-
       const contract = getCoreMicroBankContract(signer);
 
       const userId = phoneToUserId(phone);
-
       setStatus("Registering user on-chain...");
-
 
       const tx = await contract.registerUser(userId);
       await tx.wait();
@@ -77,82 +85,84 @@ const UserSection = () => {
       setVoucher({
         phone,
         amount: 0,
-        code: userId.slice(0, 10).toUpperCase(), // short ID fingerprint
+        code: userId, // full userId now
         issuedAt: Date.now(),
         txHash: tx.hash,
       });
+
       await notifySMS(phone,
         `Osuubiddwa ssente mu Liquid.\n` +
         `Omukozesa awandiikiddwa bulungi.\n` +
         `Webale nnyo / Thank you`
       );
-      // await sendSMS({
-      //   to: phone,
-      //   message:
-      //     "Oli mutendesi wa Liquid Agent.\n" +
-      //     "Omukozesa awandiikiddwa bulungi.\n" +
-      //     "Webale okukozesa Liquid.",
-      // });
 
       setStatus("✅ User registered successfully");
-
     } catch (err: any) {
-      console.error(err);
-
-      const message =
-        err?.error?.message ||
-        err?.data?.message ||
-        err?.reason ||
-        err?.message;
-
-      if (message?.includes("User exists")) {
-        setStatus("⚠️ User already exists");
-      } else {
-        setStatus("❌ Registration failed");
-      }
+      const message = err?.error?.message || err?.data?.message || err?.reason || err?.message;
+      if (message?.includes("User exists")) setStatus("⚠️ User already exists");
+      else setStatus("❌ Registration failed");
     }
   };
 
   return (
-    <section id="user" style={{ padding: "100px 20px", minHeight: "100vh" }}>
-      <h2> User Registration</h2>
+    <section id="user" style={pageWrap}>
+      <h2 style={{ marginBottom: 32 }}>User Registration</h2>
 
-      <div style={formCard}>
-        <input
-          type="text"
-          placeholder="User phone number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          style={inputStyle}
-        />
+      <div style={grid}>
+        {/* Registration */}
+        <div style={card}>
+          <h3>Register New User</h3>
+          <input
+            type="text"
+            placeholder="User phone number (e.g. +2567xxxxxxx)"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={input}
+          />
 
-        <button
-          onClick={registerUser}
-          style={{
-            marginTop: 14,
-            width: "100%",
-            padding: 12,
-            borderRadius: 10,
-            border: "none",
-            background: "#2563eb",
-            color: "#fff",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Register User
-        </button>
+          <button onClick={registerUser} style={button}>
+            Register User
+          </button>
 
-        {status && (
-          <p style={{ marginTop: 12, fontSize: 14 }}>
-            {status}
+          {status && <p style={{ marginTop: 12, fontSize: 14 }}>{status}</p>}
+          <p style={{ marginTop: 8, ...muted }}>
+            Phone is hashed into a cryptographic userId on-chain.
           </p>
-        )}
+        </div>
 
-        <VoucherDisplay voucher={voucher} />
+        {/* Search */}
+        <div style={card}>
+          <h3>Search User</h3>
+          <input
+            placeholder="Enter phone number"
+            value={searchPhone}
+            onChange={(e) => setSearchPhone(e.target.value)}
+            style={input}
+          />
+
+          <button onClick={handleSearch} style={{ ...button, background: "#111827" }}>
+            Search User
+          </button>
+
+          {userState && (
+            <div style={{ marginTop: 14 }}>
+              <p><strong>Deposit:</strong> {userState.depositBalance}</p>
+              <p><strong>Loan Debt:</strong> {userState.loanDebt}</p>
+            </div>
+          )}
+        </div>
       </div>
 
-
+      {/* Voucher */}
+      <div
+        style={{
+          marginTop: 16,
+          maxWidth: 860,
+          overflow: "hidden",
+        }}
+      >
+        <VoucherDisplay voucher={voucher} />
+      </div>
     </section>
   );
 };

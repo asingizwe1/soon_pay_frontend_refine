@@ -92,6 +92,7 @@ const styles: any = {
     line: {
         margin: "6px 0",
         fontSize: 14,
+        color: "#111827",
     },
 
     code: (active: boolean) => ({
@@ -219,7 +220,8 @@ const EXPLORER = import.meta.env.VITE_EXPLORER_URL; */}
                                 onClick={downloadVoucher}
                                 style={{
                                     marginTop: 16,
-                                    width: "100%",
+                                    width: "95%",
+                                    maxWidth: 240,
                                     padding: 10,
                                     background: "#111827",
                                     color: "#fff",
@@ -229,7 +231,7 @@ const EXPLORER = import.meta.env.VITE_EXPLORER_URL; */}
                             >
                                 ⬇ Download Voucher
                             </button>
-                        )}
+                        )}y
                     </div>
                 </div>
             </div>
@@ -280,3 +282,5 @@ export default VoucherDisplay;
 // ❌ Do NOT call contracts from this component
 
 // ❌ Do NOT store voucher state here
+
+// VoucherDisplay.tsx (userId visible)

@@ -44,6 +44,20 @@ const CONTRACT_ADDRESS = import.meta.env.VITE_CORE_MICROBANK_ADDRESS;
 export function useCoreMicroBank() {
   // let contract: ethers.Contract | null = null;
 
+  const getUserState = async (phone: string) => {
+    const contract = await getContract();
+    const userId = phoneToUserId(phone);
+    const user = await contract.users(userId);
+
+    return {
+      depositBalance: user.depositBalance.toString(),
+      loanDebt: user.loanDebt.toString(),
+      stakedBalance: user.stakedBalance.toString(),
+      exists: user.exists
+    };
+  };
+
+
   const getContract = async () => {
     if (!window.ethereum) {
       throw new Error("MetaMask not found");
@@ -61,11 +75,11 @@ export function useCoreMicroBank() {
   };
 
   //get user debt function
-  const getUserDebt = async (userId: string) => {
-    const contract = await getContract();
-    const user = await contract.users(userId);
-    return user.loanDebt.toString();
-  };
+  // const getUserDebt = async (userId: string) => {
+  //   const contract = await getContract();
+  //   const user = await contract.users(userId);
+  //   return user.loanDebt.toString();
+  // };
 
 
   // 🔄 Convert protocol fees to LIQ (ADMIN / DEMO)
@@ -136,66 +150,72 @@ export function useCoreMicroBank() {
   };
 
   // 🏦 Loan
-  const requestLoan = async (userId: string, amount: string) => {
+  const requestLoan = async (phone: string, amount: string) => {
     const contract = await getContract();
+    const userId = phoneToUserId(phone);
     const parsed = ethers.utils.parseUnits(amount, 0);
     const tx = await contract.requestLoan(userId, parsed);
     return tx.wait();
   };
 
-  const repayLoan = async (userId: string, amount: string) => {
+  const repayLoan = async (phone: string, amount: string) => {
     const contract = await getContract();
+    const userId = phoneToUserId(phone);
     const parsed = ethers.utils.parseUnits(amount, 0);
     const tx = await contract.repayLoan(userId, parsed);
-    return tx//.wait();
+    return tx.wait();
   };
 
-  const maxBorrowable = async (userId: string) => {
+  const maxBorrowable = async (phone: string) => {
     const contract = await getContract();
+    const userId = phoneToUserId(phone);
     const value = await contract.maxBorrowable(userId);
     return value.toString();
   };
 
+  const getUserDebt = async (phone: string) => {
+    const contract = await getContract();
+    const userId = phoneToUserId(phone);
+    const user = await contract.users(userId);
+    return user.loanDebt.toString();
+  };
   // 🏧 Withdraw
-  const withdraw = async (userId: string, amount: string) => {
+  const withdraw = async (phone: string, amount: string) => {
     if (!window.ethereum) {
       throw new Error("MetaMask not found");
     }
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-
-    const signer = provider.getSigner();
+    const contract = await getContract();
+    const userId = phoneToUserId(phone);
+    const parsed = ethers.utils.parseUnits(amount, 0);
+    const signer = (await getContract()).signer;
     const to = await signer.getAddress();
-
-    const contract = new ethers.Contract(
-      CONTRACT_ADDRESS,
-      CoreMicroBankABI,
-      signer
-    );
+    const tx = await contract.withdraw(userId, parsed, to);
+    return tx;
 
     // amount is UGX (human), but bonus is paid in LIQ (18 decimals logic inside contract)
     // So we must scale amount to 18 decimals before sending
-    const parsed = ethers.utils.parseUnits(amount, 0);
+    // const parsed = ethers.utils.parseUnits(amount, 0);
 
-    const tx = await contract.withdraw(userId, parsed, to);
-    return tx;//.wait();
+    // const tx = await contract.withdraw(userId, parsed, to);
+    // return tx;//.wait();
   };
 
 
   return {
-    getUserDebt,
-    registerUser,
-    recordDeposit,
-    withdraw,
-    requestLoan,
-    repayLoan,
-    maxBorrowable,
-    convertFeesAndStake,
-    getProtocolStats,
-    getUGXtoUSD,
-    phoneToUserId
-  };
+  getUserDebt,
+  registerUser,
+  recordDeposit,
+  withdraw,
+  getUserState,
+  requestLoan,
+  repayLoan,
+  maxBorrowable,
+  convertFeesAndStake,
+  getProtocolStats,
+  getUGXtoUSD,
+  phoneToUserId
+};
 }
 // LIQ is owned by the protocol
 

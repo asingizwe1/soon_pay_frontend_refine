@@ -6,16 +6,18 @@
 import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 import VoucherDisplay from "./VoucherDisplay";
+import { ugxApproxFromUsd } from "@/utils/sharedUtils";
 //import { sendSMS } from "../utils/sendSMS";
 import { getUserPhone } from "../utils/userDictionary";
 import type { Voucher } from "@/types/voucher";
+import { useEffect } from "react";
 const formCard = {
     background: "#ffffff",
     borderRadius: 16,
     padding: 20,
     boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
 };
-
+const UGX_PER_USD = 3600;
 const inputStyle = {
     width: "100%",
     padding: "12px 14px",
@@ -32,40 +34,25 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
 
     const { withdraw } = useCoreMicroBank();
 
-    const [userId, setUserId] = useState("");
+    const [phone, setPhone] = useState("");
     const [amount, setAmount] = useState("");
+    const [ugxPreview, setUgxPreview] = useState<number | null>(null);
+
 
     const handleWithdraw = async () => {
-        if (!userId || !amount) return alert("Missing fields");
+        if (!phone || !amount) return alert("Missing fields");
 
         try {
-            const tx = await withdraw(userId, amount);
-
+            const tx = await withdraw(phone, amount);
             console.log("WITHDRAW TX:", tx);
 
-            // ✅ Create voucher AFTER success
             setVoucher({
-                phone: userId.slice(0, 10) + "...", // or real phone later
+                phone,
                 amount: Number(amount),
                 code: crypto.randomUUID().slice(0, 8).toUpperCase(),
                 issuedAt: Date.now(),
                 txHash: tx.hash,
             });
-            await tx.wait();
-            const phone = getUserPhone(userId);
-
-            if (!phone) {
-                alert("User phone not found. User must deposit/register first.");
-                return;
-            }
-
-            // await sendSMS({
-            //     to: phone,
-            //     message:
-            //         `Okujjayo ssente kuyise bulungi.\n` +
-            //         `UGX ${amount} zitumiddwa.\n` +
-            //         `Webale nnyo.`,
-            // });
 
             alert("Withdraw successful");
         } catch (err) {
@@ -74,6 +61,19 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
         }
     };
 
+    useEffect(() => {
+        if (!amount) {
+            setUgxPreview(null);
+            return;
+        }
+
+        const usd = Number(amount);
+        if (isNaN(usd)) return;
+
+        const ugx = ugxApproxFromUsd(usd, UGX_PER_USD);
+        setUgxPreview(ugx);
+    }, [amount]);
+
 
     return (
         <section id="withdraw" style={{ padding: "100px 20px" }}>
@@ -81,19 +81,22 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
 
             <div style={{ maxWidth: 420, ...formCard }}>
                 <input
-                    placeholder="User ID (bytes32)"
-                    value={userId}
-                    onChange={e => setUserId(e.target.value)}
-                    style={{ ...inputStyle, width: "90%" }}
+                    placeholder="User phone number"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
                 />
 
                 <input
-                    placeholder="Amount"
+                    placeholder="Amount (USD)"
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
                     style={{ ...inputStyle, width: "90%" }}
                 />
-
+                {ugxPreview !== null && (
+                    <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 6 }}>
+                        ≈ UGX {ugxPreview.toLocaleString()}
+                    </div>
+                )}
                 <VoucherDisplay voucher={voucher} />
 
 

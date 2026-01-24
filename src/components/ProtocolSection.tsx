@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 
 type ProtocolSectionProps = {
     stats: any;
     refreshProtocol: () => Promise<void>;
 };
+
 
 
 const cardGrid = {
@@ -34,6 +36,16 @@ const statValue = {
     color: "#111827",
 };
 const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
+    // const [searchPhone, setSearchPhone] = useState("");
+    // const [userState, setUserState] = useState<any>(null);
+
+    // const { getUserState } = useCoreMicroBank();
+
+    // const handleSearch = async () => {
+    //     const state = await getUserState(searchPhone);
+    //     setUserState(state);
+    // };
+
     const { convertFeesAndStake } = useCoreMicroBank();
     return (
         <section
@@ -114,7 +126,23 @@ const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
                         </button>
                     </div>
                 </div>
+
             )}
+            {/* <input
+                placeholder="Enter phone number"
+                value={searchPhone}
+                onChange={(e) => setSearchPhone(e.target.value)}
+            />
+
+            <button onClick={handleSearch}>Search User</button>
+
+            {userState && (
+                <div>
+                    <p>Deposit: {userState.depositBalance}</p>
+                    <p>Loan Debt: {userState.loanDebt}</p>
+                </div>
+            )} */}
+
         </section>
     );
 };

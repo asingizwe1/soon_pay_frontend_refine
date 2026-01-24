@@ -1,14 +1,10 @@
-// requestLoan
-
-// repayLoan
-
-// maxBorrowable
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
-//import { sendSMS } from "../utils/sendSMS";
-import { getUserPhone } from "../utils/userDictionary";
 import { notifySMS } from "@/utils/smsClient";
-// shared UI styles (put near top of file)
+import { ugxApproxFromUsd } from "@/utils/sharedUtils";
+
+const UGX_PER_USD = 3600;
+
 const formCard = {
     background: "#ffffff",
     borderRadius: 16,
@@ -24,6 +20,7 @@ const inputStyle = {
     fontSize: 14,
     outline: "none",
 };
+
 const actionBtn = {
     marginTop: 12,
     width: "100%",
@@ -34,50 +31,46 @@ const actionBtn = {
     fontWeight: 600,
     cursor: "pointer",
 };
+
 const LoanSection = () => {
-    //     Functions are not global
+    const { requestLoan, repayLoan, maxBorrowable, getUserDebt } =
+        useCoreMicroBank();
 
-    // They must be:
-
-    // Defined inside the hook
-
-    // Returned
-
-    // Destructured where used
-    const {
-        requestLoan,
-        repayLoan,
-        maxBorrowable,
-        getUserDebt
-    } = useCoreMicroBank();
-
-    const [userId, setUserId] = useState("");
+    const [phone, setPhone] = useState("");
     const [amount, setAmount] = useState("");
     const [max, setMax] = useState<string | null>(null);
+    const [ugxPreview, setUgxPreview] = useState<number | null>(null);
 
+    // ✅ UGX approximation preview
+    useEffect(() => {
+        if (!amount) {
+            setUgxPreview(null);
+            return;
+        }
+
+        const usd = Number(amount);
+        if (isNaN(usd)) return;
+
+        const ugx = ugxApproxFromUsd(usd, UGX_PER_USD);
+        setUgxPreview(ugx);
+    }, [amount]);
+
+    // ✅ Request loan
     const handleRequest = async () => {
+        if (!phone || !amount) {
+            alert("Missing fields");
+            return;
+        }
+
         try {
-            const phone = getUserPhone(userId);
+            await requestLoan(phone, amount);
 
-            if (!phone) {
-                alert("User phone not found. User must deposit/register first.");
-                return;
-            }
-            await requestLoan(userId, amount);
-
-            notifySMS(phone,
+            notifySMS(
+                phone,
                 `Osuubiddwa ssente mu Liquid.\n` +
                 `Amount / Omuwendo: UGX ${amount}\n` +
                 `Webale nnyo / Thank you`
             );
-
-            // await sendSMS({
-            //     to: phone,
-            //     message:
-            //         `Empaako eyasabiiddwa eyise.\n` +
-            //         `Omuwendo: UGX ${amount}\n` +
-            //         `Jjukira okusasula mu budde.`,
-            // });
 
             alert("Loan requested");
         } catch (e) {
@@ -86,13 +79,14 @@ const LoanSection = () => {
         }
     };
 
+    // ✅ Repay loan
     const handleRepay = async () => {
-        if (!userId || !amount) {
+        if (!phone || !amount) {
             alert("Missing fields");
             return;
         }
 
-        const debt = await getUserDebt(userId);
+        const debt = await getUserDebt(phone);
 
         if (Number(amount) > Number(debt)) {
             alert(`Cannot repay more than outstanding debt (${debt})`);
@@ -100,7 +94,7 @@ const LoanSection = () => {
         }
 
         try {
-            await repayLoan(userId, amount);
+            await repayLoan(phone, amount);
             alert("Loan repaid");
         } catch (err) {
             console.error(err);
@@ -108,9 +102,18 @@ const LoanSection = () => {
         }
     };
 
+    // ✅ Max borrowable
     const handleMaxBorrowable = async () => {
-        const value = await maxBorrowable(userId);
+        if (!phone) return alert("Enter phone first");
+        const value = await maxBorrowable(phone);
         setMax(value);
+    };
+
+    // ✅ Repay full
+    const handleRepayFull = async () => {
+        if (!phone) return alert("Enter phone first");
+        const debt = await getUserDebt(phone);
+        setAmount(debt);
     };
 
     return (
@@ -119,18 +122,24 @@ const LoanSection = () => {
 
             <div style={{ maxWidth: 400, ...formCard }}>
                 <input
-                    placeholder="User ID (bytes32)"
-                    value={userId}
-                    onChange={e => setUserId(e.target.value)}
+                    placeholder="User phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     style={{ ...inputStyle, width: "90%" }}
                 />
 
                 <input
-                    placeholder="Amount"
+                    placeholder="Amount (USD)"
                     value={amount}
-                    onChange={e => setAmount(e.target.value)}
+                    onChange={(e) => setAmount(e.target.value)}
                     style={{ ...inputStyle, width: "90%" }}
                 />
+
+                {ugxPreview !== null && (
+                    <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 6 }}>
+                        ≈ UGX {ugxPreview.toLocaleString()}
+                    </div>
+                )}
 
                 <button style={actionBtn} onClick={handleRequest}>
                     Request Loan
@@ -140,27 +149,20 @@ const LoanSection = () => {
                     Repay Loan
                 </button>
 
-                <button style={actionBtn} onClick={handleMaxBorrowable}>
+                {/* <button style={actionBtn} onClick={handleMaxBorrowable}>
                     Check Max Borrowable
                 </button>
 
                 {max && <p>Max Borrowable: {max}</p>}
 
-                <button
-                    onClick={async () => {
-                        const debt = await getUserDebt(userId);
-                        setAmount(debt);
-                    }}
-                >
+                <button style={actionBtn} onClick={handleRepayFull}>
                     Repay Full
-                </button>
-                <p>Outstanding Debt: {max}</p>
+                </button> */}
+
+                {/* <p>Outstanding Debt: {max}</p> */}
             </div>
         </section>
     );
 };
 
 export default LoanSection;
-// 0777615456
-
-// 0xb7922568fa6c9425732bad891c9ae8d8f34b7bf0eb3a7869f1a8523b58fb6f0a
