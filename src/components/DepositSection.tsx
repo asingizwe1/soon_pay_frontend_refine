@@ -154,7 +154,7 @@ const DepositSection = ({ refreshProtocol }: DepositSectionProps) => {
                     </div>
                 )}
 
-                <VoucherDisplay voucher={voucher} />
+               <VoucherDisplay voucher={voucher} context="deposit" />
 
 
                 <button

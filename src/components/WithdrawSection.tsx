@@ -97,7 +97,7 @@ const WithdrawSection = ({ totalLiquidStaked }: { totalLiquidStaked: number }) =
                         ≈ UGX {ugxPreview.toLocaleString()}
                     </div>
                 )}
-                <VoucherDisplay voucher={voucher} />
+                <VoucherDisplay voucher={voucher} context="withdraw" />
 
 
                 <button

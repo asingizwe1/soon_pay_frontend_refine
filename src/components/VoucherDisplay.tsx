@@ -114,8 +114,25 @@ const styles: any = {
 };
 
 
+type VoucherDisplayProps = {
+    voucher: Voucher | null;
+    context?: "deposit" | "withdraw"; // 👈 NEW (optional, default-safe)
+};
+const VoucherDisplay = ({
+    voucher,
+    context = "deposit",
+}: VoucherDisplayProps) => {
+    const UGX_PER_USD = 3800; // or your actual rate
 
-const VoucherDisplay = ({ voucher }: { voucher: Voucher | null }) => {
+    const formatUsd = (val: number) =>
+        val.toFixed(2); // only 2dp for display
+
+    const formatUgx = (val: number) =>
+        Math.round(val).toLocaleString(); // no decimals for UGX
+
+    const ugxApproxFromUsd = (usd: number) =>
+        usd * UGX_PER_USD;
+
     const hasVoucher = voucher !== null;
     const voucherRef = useRef<HTMLDivElement>(null);
     const downloadVoucher = async () => {
@@ -201,8 +218,20 @@ const EXPLORER = import.meta.env.VITE_EXPLORER_URL; */}
 
                         <p style={styles.line}>
                             <strong>Amount / Omuwendo:</strong>{" "}
-                            {hasVoucher ? `UGX ${voucher!.amount}` : "UGX ••••"}
+                            {hasVoucher ? (
+                                context === "withdraw" ? (
+                                    <>
+                                        ${formatUsd(voucher!.amount)}{" "}
+                                        (≈ UGX {formatUgx(ugxApproxFromUsd(voucher!.amount))})
+                                    </>
+                                ) : (
+                                    <>UGX {formatUgx(voucher!.amount)}</>
+                                )
+                            ) : (
+                                context === "withdraw" ? "$•••• (≈ UGX ••••)" : "UGX ••••"
+                            )}
                         </p>
+
 
                         <p style={styles.line}>
                             <strong>Issued / Yafunye ku:</strong>{" "}

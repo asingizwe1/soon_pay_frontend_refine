@@ -31,12 +31,41 @@ const DevWalletPanel = () => {
                 <SimpleConnectButton />
             </div>
 
+            <div
+                style={{
+                    marginTop: 10,
+                    padding: 7,
+                    borderRadius: 12,
+                    background: "linear-gradient(135deg, #111827, #1f2933)",
+                    color: "#fff",
+                    textAlign: "center",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+                }}
+            >
+                <div style={{ fontSize: 14, opacity: 0.8 }}>
+                    Exchange Rate
+                </div>
+
+                <div
+                    style={{
+                        fontSize: 15,
+                        fontWeight: 700,
+                        marginTop: 6,
+                        letterSpacing: 1,
+                    }}
+                >
+                    $1  =  UGX 3,600
+                </div>
+
+            </div>
+
+            {/* 
             <details style={{ marginTop: 12 }}>
                 <summary style={{ cursor: 'pointer' }}>
                     Contract Interaction
                 </summary>
                 <ContractInteractionSample />
-            </details>
+            </details> */}
         </div>
     );
 };
