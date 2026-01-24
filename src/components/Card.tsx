@@ -40,7 +40,7 @@ const Card = ({
       }}>
       <b>{getName(connector)}</b>
       <div style={{ marginBottom: '1rem' }}>
-        isActive ? {isActive ? '🟢' : '🔴'}
+        Active {isActive ? '🟢' : '🔴'}
       </div>
       <div>ChainId: {chainId}</div>
       <div style={{ marginBottom: '1rem' }}>
