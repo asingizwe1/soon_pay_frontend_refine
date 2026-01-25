@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ethers } from "ethers";
 import { useCoreMicroBank } from "../hooks/useCoreMicroBank";
 
 type ProtocolSectionProps = {
@@ -47,6 +48,12 @@ const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
     // };
 
     const { convertFeesAndStake } = useCoreMicroBank();
+    if (!stats) return <p>Loading protocol data...</p>;
+
+    const feePool = Number(stats.feePool).toLocaleString();
+
+    const totalStakedLIQ = ethers.utils.formatUnits(stats.totalStaked, 18);
+    const protocolLIQ = ethers.utils.formatUnits(stats.liquidBalance, 18);
     return (
         <section
             id="protocol"
@@ -71,18 +78,25 @@ const ProtocolSection = ({ stats, refreshProtocol }: ProtocolSectionProps) => {
                     <div style={cardGrid}>
                         <div style={statCard}>
                             <div style={statLabel}>Protocol Fee Pool</div>
-                            <div style={statValue}>{stats.feePool}</div>
+                            <div style={statValue}>
+                                {Number(feePool).toLocaleString()} LIQ
+                            </div>
                         </div>
 
                         <div style={statCard}>
                             <div style={statLabel}>Total Liquid Staked</div>
-                            <div style={statValue}>{stats.totalStaked}</div>
+                            <div style={statValue}>
+                                {Number(totalStakedLIQ).toLocaleString()} LIQ
+                            </div>
                         </div>
 
                         <div style={statCard}>
                             <div style={statLabel}>Protocol LIQ Balance</div>
-                            <div style={statValue}>{stats.liquidBalance}</div>
+                            <div style={statValue}>
+                                {Number(protocolLIQ).toLocaleString()} LIQ
+                            </div>
                         </div>
+
                     </div>
 
                     {/* Admin Action */}
