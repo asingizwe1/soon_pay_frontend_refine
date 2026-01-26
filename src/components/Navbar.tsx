@@ -14,10 +14,10 @@ const Navbar = () => {
             behavior: 'smooth'
         });
     };
-
+    //701197348
     return (
         <nav className="navbar">
-            <div className="brand">LIQUID</div>
+            <div className="brand">MIRCO-VOUCH LIQUID AGENT</div>
 
             <div className="nav-links">
                 {sections.map(sec => (
