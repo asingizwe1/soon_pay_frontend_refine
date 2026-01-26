@@ -73,6 +73,8 @@ VITE_CORE_MICROBANK_ADDRESS=0xa637140be582b49c54cd8dab6f99dd75fe9d500a
 cd frontend
 npm install
 
+clone repo: git clone https://github.com/asingizwe1/soon_pay_frontend_refine.git
+
 
 Dependencies used:
 
@@ -84,10 +86,6 @@ npm install vite
 8️⃣ Run Frontend
 npm run dev
 
-
-Open:
-
-http://localhost:5173
 
 🔐 Core Smart Contract Flow
 👤 Register User
