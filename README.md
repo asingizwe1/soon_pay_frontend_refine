@@ -6,6 +6,7 @@ CoreMicroBank is a custodial, agent-assisted microbanking system designed to ser
 It enables on-chain deposits, protocol fees, small loans, yield generation, and withdrawal bonuses, all backed by transparent smart contracts and a real-time dashboard UI.
 
 This project demonstrates how blockchain can power offline-first finance, community yield, and progressive credit access without requiring users to understand crypto or DeFi.
+```
 
 ```text
  Features
@@ -31,6 +32,7 @@ This project demonstrates how blockchain can power offline-first finance, commun
 🔗 Chainlink price feed integration (UGX → USD)
 
 🤖 Chainlink Automation-ready architecture
+```
 
 🛠️ Tech Stack
 Smart Contracts
@@ -61,7 +63,7 @@ https://nodejs.org
 
 MetaMask
 https://metamask.io
-
+```
 
 Create a .env file in the frontend root:
 
