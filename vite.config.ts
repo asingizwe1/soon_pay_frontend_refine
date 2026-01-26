@@ -1,19 +1,12 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react()],
   server: {
-    open: true // Open browser automatically when running `yarn dev`
-    /**
-     * Use below if hot reload does not work
-     **/
-    // watch: {
-    //   usePolling: true
-    // }
+    port: 5173
   },
-  // TODO: remove when you use this template for other projects
-  base: '/vite-ethersjs-template/'
+  preview: {
+    port: 4173
+  }
 });
